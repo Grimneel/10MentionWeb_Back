@@ -298,11 +298,401 @@
                               </li>
                          </ul>
                     </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Le mot-clef <em>WHERE</em> et  l'ordre de priorité sur les conditions AND et OR </h6>
+                         <ul>
+                              <li> Nous cherchons à afficher les employes qui travaillent dans le service direction et qui gagnent 4000 euros ou 7000 euros
+                                   <strong>
+                                        <code>
+                                             SELECT prenom, nom, service, salaire FROM employes WHERE service = 'direction' AND salaire = 4000 OR salaire = 7000 
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li>
+                                   Lorsqu'il y a AND et OR au sein de la même requête, le système lit la condition de la requête de la droite vers la gauche. Ainsi il verra d'abord
+                                   <strong>
+                                        <code>salaire = 4000 OR salaire = 7000</code>
+                                   </strong>
+                                   Puis le service demandé.
+                              </li>
+                              <li>
+                                   Pour garantir l'ordre naturel de lecture (de la gauche vers la droite), nous utiliserons des parenthèses :
+                                   <strong>
+                                        <code>
+                                             SELECT prenom, nom, service, salaire FROM employes WHERE (salaire = 4000 OR salaire = 7000) AND service = 'direction'
+                                        </code>
+                                   </strong>
+                              </li>
+                         </ul>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Le mot-clef <em>WHERE</em> avec <em>BETWEEN</em> (entre) </h6>
+                         <ul>
+                              <li class="alert alert-success">Nous cherchons avec une condition, une partie des données
+                                   <br>
+                                   SELECT * FROM nomTable WHERE colonne BETWEEN donnée AND donnée
+
+                              </li>
+                              <li>
+                                   Nous cherchons à trouver le nombre de personnes embauchées entre 2021 et 2023
+                                   <strong>
+                                        <code>
+                                             SELECT nom, prenom, date_embauche FROM employes WHERE date_embauche BETWEEN '2021-01-01' AND '2023-01-01'
+                                        </code>
+                                   </strong>
+                              </li>
+                         </ul>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Le mot-clef <em>WHERE</em> avec <em>LIKE</em> (comme) </h6>
+                         <ul>
+                              <li>Afficher les employes dont le prenom commence par la lettre "s" : <br>
+                                   <strong>
+                                        <code>
+                                             SELECT * FROM employes WHERE prenom LIKE 's%'
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li>Cette méthode sera très utile dans un moteur de recherche.</li>
+                              <li>
+                                   Dans cette ligne de code, le % signifie que l'on recherche le 's' en début de mot, ainsi, la suite de caractères viens après le 's'
+                              </li>
+                              <li>
+                                   Afficher l'employé dont le prénom contient "s"
+                                   <strong>
+                                        <code>
+                                             SELECT * FROM employes WHERE prenom LIKE '%s%'
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li>
+                                   Avec la présence du pourcentage avant et après le caractère recherché, nous demandons au système de trouver des enregistrements contenant l'expression recherchée.
+                              </li>
+                         </ul>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Le mot-clef <em>WHERE</em> avec <em>CURDATE</em> (date courante) </h6>
+                         <ul>
+                              <li class="alert alert-success">
+                                   C'est une fonction prédéfinie avec ses parenthèses  
+                              </li>
+                              <li>
+                                   Une requête qui donne la date du serveur, la date du jour :
+                                   <strong>
+                                        <code>
+                                             SELECT CURDATE()
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li class="alert alert-danger">
+                                   Dans une bdd, les dates sont toujours au format états-unis YYYY-MM-DD
+                              </li>
+                              <li>
+                                   Afficher les employés embauchés entre 2022 et aujourd'hui
+                                   <strong>
+                                        <code>
+                                             SELECT * FROM employes WHERE date_embauche BETWEEN '2022-01-01' AND CURDATE()
+                                        </code>
+                                   </strong>
+                              </li>
+                         </ul>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Le mot-clef <em>WHERE</em> avec <em>IN</em> (dans) </h6>
+                         <ul>
+                             <li>
+                              Égal (=) permet d'annoncer une seule valeur tandis que IN permet d'annoncer plusieurs valeurs
+                             </li>
+                             <li>
+                              Trouver les employes de la comptabilité et du service informatique
+                              <strong>
+                                   <code>
+                                        SELECT * FROM employes WHERE service IN ('comptabilité', 'informatique');
+                                   </code>
+                              </strong>
+                             </li> 
+                         </ul>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Le mot-clef <em>WHERE</em> avec <em>NOT IN</em> (différent) </h6>
+                         <ul>
+                             <li>
+                              Différent (!=) permet d'exclure une seule valeur, tandis que NOT IN permet d'exclure plusieurs valeurs
+                             </li>
+                             <li>
+                              Trouver les employes qui ne sont pas au service comptabilité et informatique
+                              <strong>
+                                   <code>
+                                        SELECT * FROM employes WHERE service NOT IN ('comptabilité', 'informatique');
+                                   </code>
+                              </strong>
+                             </li> 
+                         </ul>
+                    </div>
+                    
+               </div>
+               <div class="row border border-dark p-5">
+                    <div class="col-sm-12">
+                         <h2 class="text-center ">7 - Classement avec ORDER BY</h2>
+                         <hr>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <ul>
+                             <li>
+                                   Grâce à <em>ORDER BY</em>, on va classer les données par ordre alphabétique
+                             </li>
+                             <li>
+                                   On range les noms par ordre alphabétique
+                                   <strong>
+                                        <code>
+                                             SELECT prenom, nom FROM employes ORDER BY nom DESC
+                                        </code>
+                                   </strong>
+                             </li>
+                             <li>
+                              Fonction pour les strings comme pour les nombres :
+                              <strong>
+                                   <code>
+                                        SELECT prenom, nom, salaire FROM employes ORDER BY salaire ASC;
+                                   </code>
+                              </strong>
+                             </li>
+                             <li>
+                              ORDER BY permet de trier sur plusieurs colonnes 'tri multiple' :
+                              <strong>
+                                   <code>
+                                        SELECT nom, prenom, service, salaire FROM employes ORDER BY service ASC, salaire DESC
+                                   </code>
+                              </strong>
+                             </li>
+                         </ul>
+                    </div>
+                    
+                    
+               </div>
+               <div class="row border border-dark p-5">
+                    <div class="col-sm-12">
+                         <h2 class="text-center ">8 - Limiter les résultats avec le mot clé</h2>
+                         <hr>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <ul>
+                             <li>
+                                   Afficher les employés en les classant par salaire (du + grand au + petit) et en limitant le résultat à 3
+                                   <strong>
+                                        <code>
+                                             SELECT * FROM employes ORDER BY salaire DESC LIMIT 0,3;
+                                        </code>
+                                   </strong>
+                             </li>
+                             <li class="alert alert-danger">
+                              Le premier chiffre précise l'enregistrement de départ : 0 qui définit le premier enregistrement informatique. Le second chifre indique combien de résultat nous attendons.
+                             </li>
+                         </ul>
+                    </div>
+
+
+
 
                </div>
+               <div class="row border border-dark p-5">
+                    <div class="col-sm-12">
+                         <h2 class="text-center ">9 - Réaliser des calculs dans nos requêtes</h2>
+                         <hr>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6>Calculer une somme avec <em>SUM()</em> et une moyenne avec <em>AVG()</em></h6>
+                         <ul>
+                              <li>Calculer la somme totale des salaires à l'année des employés
+                                   <strong>
+                                        <code>
+                                             SELECT SUM(salaire*12) AS sommeSalaire FROM employes;
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li>
+                                   Calculer le salaire mensuel moyenne de tout les employés
+                                   <strong>
+                                        <code>
+                                             SELECT AVG(salaire) FROM employes;
+                                        </code>
+                                   </strong>
+                              </li>
+                         </ul>
+                         
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6>Arrondir avec <em>ROUND()</em> </h6>
+                         <ul>
+                              <li>
+                                   Grâce à <em>ROUND()</em> on peut arrondir le résultat d'un calcul : 
+                                   <strong>
+                                        <code>
+                                             SELECT ROUND(AVG(salaire)) FROM employes
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li class="alert alert-danger">
+                                   On peut cumuler deux notions comme dans l'exemple précédent avec ROUND() et AVG(). Attention à la syntaxe et aux parenthèses.
+                              </li>
+                         </ul>
+                         
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6>Compter avec <em>COUNT()</em> </h6>
+                         <ul>
+                              <li>
+                                   Grâce à <em>COUNT()</em> on peut compter les lignes dans notre table : 
+                                   <strong>
+                                        <code>
+                                             SELECT COUNT(*) AS nbr_ligne FROM employes
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li>Compter et afficher le nombre d'employés de sexe féminin dans la table
+                                   <strong>
+                                        <code>
+                                             SELECT COUNT(*) FROM employes WHERE sexe = 'f';
+                                        </code>
+                                   </strong>
+
+                              </li>
+                              
+                         </ul>
+                         
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6>Isoler une valeur minimum et maximum <em>MIN() / MAX()</em></h6>
+                         <ul>
+                              <li>
+                                   Grâce à <em>MIN()</em> on peut trouver le salaire minimum : 
+                                   <strong>
+                                        <code>
+                                             SELECT MIN(salaire) AS salaireMin FROM employes
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li>
+                                   Grâce à <em>MAX()</em> on peut trouver le salaire maximum : 
+                                   <strong>
+                                        <code>
+                                             SELECT MAX(salaire) AS salaireMin FROM employes
+                                        </code>
+                                   </strong>
+                              </li>
+                              
+                         </ul>
+                         
+                    </div>
 
 
 
+
+
+
+
+               </div>
+               <div class="row border border-dark p-5">
+                    <div class="col-sm-12">
+                         <h2 class="text-center ">10 - Les regroupement avec GROUP BY</h2>
+                         <hr>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <ul>
+                              <li>Ici on veut connaitre le nombre d'employés par service 
+                                   <strong>
+                                        <code>
+                                             SELECT service, COUNT(*) AS nbrEmploye FROM employes GROUP BY service;
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li>Calculer le nombres d'hommes et de femmes
+                                   <strong>
+                                        <code>
+                                             SELECT sexe, COUNT(*) AS nbrEmploye FROM employes GROUP BY sexe;
+                                        </code>
+                                   </strong>
+
+                              </li>
+                         </ul>
+                    </div>
+               </div>
+               <div class="row border border-dark p-5">
+                    <div class="col-sm-12">
+                         <h2 class="text-center ">11 - Le mot clef HAVING</h2>
+                         <hr>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <ul>
+                              <li>
+                                   Sélectionner et afficher seulement les services qui ont plus de deux employés : 
+                                   <strong>
+                                        <code>
+                                             SELECT service, COUNT(*) AS nbr_Employe  FROM employes GROUP BY service HAVING COUNT(*) > 2
+                                        </code>
+                                   </strong>
+                              </li>
+                         </ul>
+                    </div>
+               </div>
+               <div class="row border border-dark p-5">
+                    <div class="col-sm-12">
+                         <h2 class="text-center ">12 - Requête de modification</h2>
+                         <hr>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Mise à jour avec UPDATE</h6>
+                         <ul>
+                              <li>
+                                   Augmenter le salaire d'un employé :
+                                   <strong>
+                                        <code>
+                                             UPDATE employes SET salaire = 2700 WHERE id_employe = 380
+                                        </code>
+                                   </strong>
+                              </li>
+                              <li class="alert alert-danger">
+                                   On utilise toujours des id pour mettre à jour les informations de la base de données car c'est le seul élément unique 
+                              </li>
+                              <li>Pour faire plusieurs mise à jour en même temps il faudra séparer les données par une virgule : 
+                                   <strong>
+                                        <code>
+                                             UPDATE employes SET service = 'direction', salaire = 4000 WHERE id_employe = 380
+                                        </code>
+                                   </strong>
+
+                              </li>
+                         </ul>
+                    </div>
+                    <div class="col-sm-12 mt-5 text-center">
+                         <h6 class="text-center">Supprimer avec DELETE</h6>
+                         <ul>
+                              <li>
+                                   Supprimer l'enregistrement d'un employé avec DELETE :
+                                   <strong>
+                                        <code>
+                                             DELETE from employes WHERE id_employe = 910
+                                        </code>
+                                   </strong>
+                              </li>
+                              
+                              <li>
+                                   Supprimer plusieurs enregistrement avec le code suivant (on supprime toutes les personnes du services contrôle)
+                                   <strong>
+                                        <code>
+                                             DELETE FROM employes WHERE service = 'contrôle'
+                                        </code>
+                                   </strong>
+                              </li>
+                         </ul>
+                    </div>
+
+
+
+
+
+
+               </div>
 
 
 
