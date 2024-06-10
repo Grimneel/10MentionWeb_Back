@@ -245,6 +245,22 @@
                                                 quantite INT(11) NOT NULL <br> );
                                     </code>
                             </div>
+                            <div class="col-sm-4">
+                                <strong>
+                                    <code>
+                                        <ul>
+                                            <li>
+                                                Dans la table mange_bonbon, id_bonbon sera un clé étrangère en référence au champ id_bonbon de la table bonbons. <br>
+                                                <code>-> ALTER TABLE mange_bonbon ADD FOREIGN KEY (id_bonbon) REFERENCES haribos.bonbons(id_bonbon)</code>
+                                            </li>
+                                            <li>
+                                                Dans la table mange_bonbon, id_stagiaire sera un clé étrangère en référence au champ id_stagiaire de la table stagiaires. <br>
+                                                <code>-> ALTER TABLE mange_bonbon ADD FOREIGN KEY (id_stagiaire) REFERENCES haribos.stagiaires(id_stagiaire)</code>
+                                            </li>
+                                        </ul>
+                                    </code>
+                                </strong>
+                        </div>
                         </div>
                     </li>
                     <li>
@@ -309,18 +325,18 @@
                         </strong>
                     </li>
                     <li>
-                        voir les paramètres de la table *bonbon* <br>
+                        Afficher les paramètres de la table *bonbon* <br>
                         <strong>
-                            <code>
-                                <!-- SHOW PARAM FROM bonbon -->
-                            </code>
+                            <code>-> DESC bonbons </code>
+                            <code>-> DESC bonbons </code>
+                            <code>-> DESC bonbons </code>
                         </strong>
                      </li>
                      <li>
                         Sélectionner tous les champs de tous les enregistrements de la table *stagiaire* <br>
                         <strong>
                             <code>
-                                SELECT COUNT(*) AS nbrEnregistrements FROM stagiaires
+                                SELECT * FROM stagiaires
                             </code>
                         </strong>
 
@@ -355,13 +371,16 @@
                      </li>
                      <li>
                         Rajouter dans la table manger que Patrick a mangé 5 Tagada purple le 15 septembre <br>
+                        <p>Il faut tout d'abord insérer le bonbon tagada avec la saveur purple</p>
                         <strong>
                             <code>
-                                INSERT INTO bonbons SET id_bonbon = NULL, nom = 'tagada', saveur = 'purple'
-                                <br>
-                                ALTER TABLE mange_bonbon ADD FOREIGN KEY (id_bonbon) REFERENCES bibliotheque.bonbons(id_bonbon)
-                                <br>
-                                ALTER TABLE mange_bonbon ADD FOREIGN KEY (id_stagiaire) REFERENCES bibliotheque.stagiaires(id_stagiaire)
+                                INSERT INTO bonbons SET id_bonbon = NULL, nom = 'tagada', saveur = 'purple'                              
+                            </code>
+                        </strong>
+                        <p>J'insère dnas la table mange_bonbon que Patrick a mangé 5 Tagada purple le 15 septembre</p>
+                        <strong>
+                            <code>
+                                INSERT INTO mange_bonbon (id_bonbon, id_stagiaire, date_manger, quantite) VALUES (12,10,'2023-09-15',5)
                             </code>
                         </strong>
                      </li>
@@ -369,7 +388,7 @@
                         Sélectionner tous les noms des bonbons <br>
                         <strong>
                             <code>
-                                SELECT nom FROM bonbons GROUP BY nom;
+                                SELECT DISTINCT nom FROM bonbons ;
                             </code>
                         </strong>
                      </li>
@@ -377,7 +396,7 @@
                         Sélectionner tous les noms des bonbons en enlevant les doublons <br>
                         <strong>
                             <code>
-                                
+                                SELECT nom, COUNT(*) AS groupeNom FROM bonbons GROUP BY nom
                             </code>
                         </strong>
                      </li>
@@ -385,7 +404,7 @@
                         Récupérer les couleurs des yeux des stagiaires (Sélectionner plusieurs champs dans une table) <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, yeux FROM stagiaires;
                             </code>
                         </strong>
                      </li>
@@ -393,7 +412,12 @@
                         Dédoublonner un résultat sur plusieurs champs <br>
                         <strong>
                             <code>
-                                
+                                SELECT yeux FROM stagiaires GROUP BY yeux;
+                            </code>
+                        </strong>
+                        <strong>
+                            <code>
+                                SELECT DISTINCT yeux FROM stagiaires
                             </code>
                         </strong>
                      </li>
@@ -401,7 +425,7 @@
                         Sélectionner le stagiaire qui a l'id 5 <br>
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE id_stagiaire = 5;
                             </code>
                         </strong>
                      </li>
@@ -409,7 +433,7 @@
                         Sélectionner tous les stagiaires qui ont les yeux marrons <br>
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE yeux = 'marron'
                             </code>
                         </strong>
                      </li>
@@ -418,7 +442,7 @@
                         Sélectionner tous les stagiaires dont l'id est plus grand que 9
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE id_stagiaire > 9
                             </code>
                         </strong>
                      </li>
@@ -426,7 +450,15 @@
                         Sélectionner tous les stagiaires SAUF celui dont l'id est 3 <br>
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE id_stagiaire != 3
+                            </code>
+                        </strong>
+                        <strong>
+                            <code>
+                                SELECT * FROM stagiaires WHERE id_stagiaire > 3 OR id_stagiaire &lt; 3;
+                            </code>
+                            <code>
+                                SELECT * FROM stagiaires WHERE id_stagiaire >= 4 OR id_stagiaire &lt;= 2;
                             </code>
                         </strong>
                      </li>
@@ -434,7 +466,7 @@
                         Sélectionner tous les stagiaires qui ont un id inférieur ou égal à 10
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE id_stagiaire &lt;= 10
                             </code>
                         </strong>
                      </li>
@@ -442,7 +474,15 @@
                         Sélectionner tous les stagiaires dont l'id est compris entre 7 et 11
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE id_stagiaire BETWEEN 7 AND 11
+                            </code>
+                        </strong>
+                        <br>
+                        ou
+                        <br>
+                        <strong>
+                            <code>
+                                SELECT * FROM stagiaires WHERE id_stagiaire > 6 AND id_stagiaire &lt; 12
                             </code>
                         </strong>
                      </li>
@@ -450,7 +490,7 @@
                         Sélectionner les stagiaires dont le prénom commence par un *S* <br>
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE prenom LIKE 'S%'
                             </code>
                         </strong>
                      </li>
@@ -458,7 +498,7 @@
                         Trier les stagiaires femmes par id_stagiaire décroissant <br>
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE genre = 'f' ORDER BY id_stagiaire DESC
                             </code>
                         </strong>
                      </li>
@@ -466,7 +506,7 @@
                         Trier les stagiaires hommes par prénom dans l'ordre alphabétique <br>
                         <strong>
                             <code>
-                                
+                                SELECT * FROM stagiaires WHERE genre = 'm' ORDER BY prenom ASC
                             </code>
                         </strong>
                      </li>
@@ -475,7 +515,7 @@
                         <!-- l'ordre des membres de l'enumeration depend de l'ordre dans lequel on les a insérer dans les champs -->
                         <strong>
                             <code>
-                                
+                                SELECT prenom, genre, yeux FROM stagiaires ORDER BY genre ASC, yeux ASC
                             </code>
                         </strong>
                      </li>
@@ -483,7 +523,7 @@
                         Limiter l'affichage d'une requête de sélection de tous les stagiaires aux 3 premires résultats <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, genre, yeux FROM stagiaires LIMIT 3
                             </code>
                         </strong>
                      </li>
@@ -491,7 +531,7 @@
                         Limiter l'affichage d'une requête de sélection de tous les stagiaires à partir du 3ème résultat et des 5 suivants <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, genre, yeux FROM stagiaires LIMIT 2,6
                             </code>
                         </strong>
                      </li>
@@ -499,14 +539,14 @@
                         Afficher les 4 premiers stagiaires qui ont les yeux marron <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, genre, yeux FROM stagiaires WHERE yeux = 'marron' LIMIT 4
                             </code>
                         </strong>
                      </li>
                      <li> Pareil mais en triant les prénoms dans l'ordre alphabétique <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, genre, yeux FROM stagiaires WHERE yeux = 'marron' ORDER BY prenom LIMIT 4
                             </code>
                         </strong>
                      </li>
@@ -514,7 +554,7 @@
                         Compter le nombre de stagiaires <br>
                         <strong>
                             <code>
-                                
+                                SELECT COUNT(*) AS nbrStagiaire FROM stagiaires 
                             </code>
                         </strong>
                      </li>
@@ -522,7 +562,7 @@
                         Compter le nombre de stagiaires hommes mais en changeant le nom de la colonne de résultat par *nb_stagiaires_H* <br>
                         <strong>
                             <code>
-                                
+                                SELECT COUNT(*) AS nr_stagiaires_H FROM stagiaires WHERE genre = 'm'
                             </code>
                         </strong>
 
@@ -531,7 +571,7 @@
                         Compter le nombre de couleurs des yeux différentes <br>
                         <strong>
                             <code>
-                                
+                                SELECT COUNT(DISTINCT yeux) AS nbr_couleurs FROM stagiaires
                             </code>
                         </strong>
 
@@ -541,7 +581,15 @@
                         Afficher le prénom et les yeux du stagiaire qui a l'id_stagiaire le plus petit <br>
                         <strong>
                             <code>
-                                
+                                SELECT id_stagiaire, prenom, yeux FROM stagiaires ORDER BY id_stagiaire LIMIT 1
+                            </code>
+                        </strong>
+                        <br>
+                        ou
+                        <br>
+                        <strong>
+                            <code>
+                                SELECT id_stagiaire, prenom, yeux FROM stagiaires WHERE id_stagiaire = (SELECT MIN (id_stagiaire) FROM stagiaires)
                             </code>
                         </strong>
                      </li>
@@ -549,7 +597,23 @@
                         Afficher les stagiaires qui ont les yeux bleu et vert <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, yeux FROM stagiaires WHERE yeux IN ('bleu', 'vert')
+                            </code>
+                        </strong>
+                        <br>
+                        ou
+                        <br>
+                        <strong>
+                            <code>
+                                SELECT prenom, yeux FROM stagiaires WHERE yeux = 'bleu' OR yeux = 'vert'
+                            </code>
+                        </strong>
+                        <br>
+                        ou
+                        <br>
+                        <strong>
+                            <code>
+                                SELECT prenom, yeux FROM stagiaires WHERE (yeux = 'bleu' || yeux = 'vert')
                             </code>
                         </strong>
                      </li>
@@ -557,15 +621,15 @@
                         A l'inverse maintenant, afficher les stagiaires qui n'ont pas les yeux bleu ni vert <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, yeux FROM stagiaires WHERE yeux NOT IN ('bleu', 'vert')
                             </code>
                         </strong>
-                     </li>
+                     </li> 
                      <li>
                         Afficher combien de bonbons ont été consommés au total <br>
                         <strong>
                             <code>
-                                
+                                SELECT SUM(quantite) AS total_bonbon_mange FROM mange_bonbon;
                             </code>
                         </strong>
 
@@ -574,23 +638,49 @@
                         Afficher les saveurs des bonbons (sans doublons) <br>
                         <strong>
                             <code>
-                                
+                                SELECT saveur FROM bonbons GROUP BY saveur
+                            </code>
+                        </strong>
+                        <strong>
+                            <code>
+                                SELECT DISTINCT saveur FROM bonbons
                             </code>
                         </strong>
                      </li>
                      <li> Afficher le prénom et les yeux du stagiaire qui a l'id le plus grand /!\ c'est une requête imbriquée qu'il faut faire (requête sur le résultat d'une autre requête) : <br>
                         <strong>
                             <code>
-                                
+                                SELECT prenom, yeux FROM stagiaires WHERE id_stagiaire = (SELECT MAX(id_stagiaire) FROM stagiaires) LIMIT 1;
+                            </code>
+                        </strong>
+                        <br>
+                        ou
+                        <br>
+                        <strong>
+                            <code>
+                                SELECT prenom, yeux FROM stagiaires WHERE id_stagiaire = (SELECT id_stagiaire FROM stagiaires ORDER BY id_stagiaire DESC) LIMIT 1;
                             </code>
                         </strong>
                     </li>
                     <li>récupérer tous les stagiaires qui ont mangé des bonbons <br>
-
+                        <strong>
+                            <code>
+                                SELECT * FROM stagiaires WHERE id_stagiaire IN (SELECT id_stagiaire FROM mange_bonbon WHERE quantite != NULL)
+                            </code>
+                        </strong>
+                        <strong>
+                            <code>
+                                SELECT * FROM stagiaires WHERE id_stagiaire IN (SELECT id_stagiaire FROM mange_bonbon)
+                            </code>
+                        </strong> 
                     </li>
                     <li>
                         Récupérez les informations sur les stagiaires qui ont mangé plus d'un seul bonbon <br>
-
+                        <strong>
+                            <code>
+                                SELECT * FROM stagiaires WHERE id_stagiaire IN (SELECT id_stagiaire FROM mange_bonbon WHERE quantite != NULL)
+                            </code>
+                        </strong>
                     </li>
                     <li>
                         Afficher le prénom du stagiaire, le nom du bonbon, la date de consommation pour tous les stagiaires qui ont mangé au moins une fois <br>
@@ -608,7 +698,7 @@
 
                     <li>
                         Afficher le prénom du stagiaire qui a mangé le plus de bonbons <br>
-
+                        SELECT * FROM mange_bonbon ORDER BY quantite 1,1 
 
                     </li>
 
