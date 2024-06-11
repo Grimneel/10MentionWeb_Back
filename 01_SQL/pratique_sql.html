@@ -199,12 +199,24 @@
                         <li>Afficher l'employé ayant été embauché en dernier : <br>
                                 <strong>
                                     <code>
-                                         SELECT * FROM employes ORDER BY date_embauche DESC LIMIT 1;
+                                         SELECT * FROM employes ORDER BY date_embauche DESC LIMIT 0,1;
                                     </code>
-                                </strong>   
+                                </strong>
+                                <br>
+                                ou
+                                <br>
+                                <strong>
+                                    <code>
+                                         SELECT * FROM employes WHERE date_embauche IN (SELECT MAX(date_embauche) FROM employes)
+                                    </code>
+                                </strong>
                         </li>
                         <li>Afficher les informations de l'employé du service commercial gagnant le salaire le plus élevé : <br>
-
+                                <strong>
+                                    <code>
+                                         SELECT * FROM employes WHERE service = 'commercial' AND (salaire = (SELECT MAX(salaire) FROM employes WHERE service = 'commercial') )
+                                    </code>
+                                </strong>
 
                         </li>
 
@@ -675,20 +687,37 @@
                         </strong> 
                     </li>
                     <li>
-                        Récupérez les informations sur les stagiaires qui ont mangé plus d'un seul bonbon <br>
+                        Récupérez les informations sur les stagiaires qui ont mangé plus d'un seul bonbon = prenom, quantite<br>
                         <strong>
                             <code>
                                 SELECT * FROM stagiaires WHERE id_stagiaire IN (SELECT id_stagiaire FROM mange_bonbon WHERE quantite != NULL)
                             </code>
                         </strong>
+                        <br>
+                        ou
+                        <br>
+                        <strong>
+                            <code>
+                                SELECT stagiaires.prenom, mange_bonbon.quantite FROM  mange_bonbon, stagiaires WHERE mange_bonbon.quantite > 1 AND stagiaires.id_stagiaire = mange_bonbon.id_stagiaire
+                            </code>
+                        </strong>
                     </li>
                     <li>
                         Afficher le prénom du stagiaire, le nom du bonbon, la date de consommation pour tous les stagiaires qui ont mangé au moins une fois <br>
+                        <strong>
+                            <code>
+                                SELECT stagiaires.prenom, bonbons.nom, mange_bonbon.date_manger, mange_bonbon.quantite FROM stagiaires, bonbons, mange_bonbon WHERE mange_bonbon.quantite >= 1 AND stagiaires.id_stagiaire = mange_bonbon.id_stagiaire AND bonbons.id_bonbon = mange_bonbon.id_bonbon
 
+                            </code>
+                        </strong>
                     </li>
                     <li>
                         Afficher le nombre de consommation de *Tagada* <br>
-
+                        <strong>
+                            <code>
+                                SELECT COUNT(quantite) AS nbr_consommation FROM mange_bonbon WHERE id_bonbon IN (SELECT id_bonbon FROM bonbons WHERE nom = 'tagada')
+                            </code>
+                        </strong>
 
                     </li>
                     <li>
@@ -697,8 +726,20 @@
                     </li>
 
                     <li>
-                        Afficher le prénom du stagiaire qui a mangé le plus de bonbons <br>
-                        SELECT * FROM mange_bonbon ORDER BY quantite 1,1 
+                        Afficher le prénom du stagiaire qui a mangé le plus de bonbons : prenom, quantite <br>
+                        <strong>
+                            <code>
+                                SELECT * FROM mange_bonbon ORDER BY quantite 1,1
+                            </code>
+                        </strong>
+                        <br>
+                        ou
+                        <br>
+                        <strong>
+                            <code>
+                                SELECT stagiaires.prenom, mange_bonbon.quantite FROM stagiaires, mange_bonbon, bonbons WHERE mange_bonbon.quantite = (SELECT MAX(mange_bonbon.quantite) FROM mange_bonbon) AND stagiaires.id_stagiaire = mange_bonbon.id_stagiaire
+                            </code>
+                        </strong> 
 
                     </li>
 
