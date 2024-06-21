@@ -12,7 +12,7 @@
         <!-- Bootstrap CSS v5.2.1 -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
         <link rel="stylesheet" href="assets/css/style.css">
-        <title>Title</title>
+        <title>Accueil</title>
     </head>
 
     <body>
@@ -41,15 +41,36 @@
 
         <?php
 
-        $imgTable = ['Dragon' => 'Dragon.jpg' '', 'Drake' => 'Drake.jpg', 'Wyvern' => 'Wyvern.jpg', 'Wyrm' => 'Wyrm.jpg', 'Amphithère' => 'Amphithere.jpg', 'Komodo' => 'Komodo.jpg'];
+        $imgTable = [
+            'Dragon' => "assets/img/Dragon.jpg", 
+            'Drake' => "assets/img/Drake.jpg", 
+            'Wyvern' => "assets/img/Wyvern.jpg", 
+            'Wyrm' => "assets/img/Wyrm.jpg",
+            'Amphithère' => "assets/img/Amphithere.jpg", 
+            'Komodo' => "assets/img/Komodo.jpg"];
+
+        // echo "<table class=\"table mt-5\">
+        // <tr>";
+        // foreach ($imgTable as $key => $value) {
+        //     echo "<td> $key </td>";
+        // }
+        // echo     "</tr>
+        // </table>";
+
         echo "<table class=\"table mt-5\">
         <tr>";
         foreach ($imgTable as $key => $value) {
-            
+            // echo "<td> $value </td>";
+            echo "<td>"; 
+            echo "<img src='$value' alt='$key' class='w-50'> </td>";
+            echo "<button class='btn btn-primary btn-block'>$key</button>";
+            echo "</td>";
+            if (($key == "Wyvern") || ($key == "Komodo")){
+            echo "</tr> <tr>";
         }
-        echo     "</tr>
-        </table>";
-
+        }
+        echo "</tr>";
+        echo "</table>";
 
 
 
