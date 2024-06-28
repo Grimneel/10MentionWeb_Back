@@ -2,11 +2,31 @@
 
 <?php
 
+########################################### fonction pour débuger ###########################################
+
+
 function debug(){
     echo '<pre class="border border-dark bg-light text-primary w-50 p-3>';
         var_dump($var);
     echo '</pre>';
 }
+
+########################################### fonction d'alert ###########################################
+
+function alert(string $contenu, string $class){
+
+    return "<div class=\"alert alert-$class alert-dismissible fade show text-center w-50 m-auto mb-5\" role=\"alert\">
+               $contenu
+                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>
+            </div>";
+
+
+
+
+
+}
+
+
 ########################################### fonction pour la connexion à la BDD ###########################################
 
 // On vas utiliser l'extension PHP Data Objects (PDO), elle définit une excellente interface pour accéder à une base de données depuis PHP et d'exécuter des requêtes SQL .

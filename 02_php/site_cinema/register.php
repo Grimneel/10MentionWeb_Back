@@ -3,6 +3,127 @@
 require_once "inc/header.inc.php";
 require_once "inc/functions.inc.php";
 
+$info = "!";
+$info2 = "";
+     if (isset($_POST)) {
+          $info = "\$_POST existe";
+     } else {
+          $info = "\$_POST n'existe pas";
+     }
+
+     if (!empty($_POST)) {
+          // On vérifie si un champs est vide
+          $verif = true;
+          foreach ($_POST as $key => $value) {
+               if (empty(trim($value))) {
+                    $verif = false;
+               }
+          }
+
+          if($verif == false){
+               $info = alert("Veuillez renseigner tout les champs", "danger");
+          }else {
+               // On récupère les valeurs de nos champs et on les stockes dans des variables
+               $firstName = trim($_POST['firstName']);
+               $pseudo = trim($_POST['pseudo']);
+               $email = trim($_POST['email']);
+               $phone = trim($_POST['phone']);
+               $mdp = trim($_POST['mdp']);
+               $confirmMdp = trim($_POST['confirmMdp']);
+               $civility = trim($_POST['civility']);
+               $birthday = trim($_POST['birthday']);
+               $address = trim($_POST['address']);
+               $zip = trim($_POST['zip']);
+               $city = trim($_POST['city']);
+               $country = trim($_POST['country']);
+
+
+               $regex = '/[0-9]/'; // je stocks mon expression rationnelle dans une variable
+               $regex_email = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/"; 
+               $regex_phone = "/^\\+?[1-9][0-9]{7,14}$/";
+               $regex_password = "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/";
+               $regex_date = "^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$";
+               $regex_address = '/^\\d+ [a-zA-Z ]+, \\d+ [a-zA-Z ]+, [a-zA-Z ]+$/';
+               $regex_zip = "/^[0-9]{5}(?:-[0-9]{4})?$/";
+
+               if (!isset($lastName) || strlen($lastName) < 2 || strlen($lastName) > 15 || preg_match($regex, $lastName)) { //preg_match — Effectue une recherche de correspondance avec une expression rationnelle standard
+                    $info = alert("Le champs nom n'est pas valide", "danger");
+
+               }
+
+               if (!isset($firstName) || strlen($firstName) < 2 || strlen($firstName) > 15 || preg_match($regex, $firstName)) { 
+                    $info .= alert("Le champs prénom n'est pas valide", "danger");
+
+               }
+
+               if (!isset($pseudo) || strlen($pseudo) < 2 || strlen($pseudo) > 15 || preg_match($regex, $pseudo)) { 
+                    $info .= alert("Le champs pseudo n'est pas valide", "danger");
+
+                    
+               }
+
+               if (!isset($email) || strlen($email) < 5 || strlen($email) > 25 || !preg_match($regex_email, $email)) { 
+                    $info .= alert("Le champs email n'est pas valide", "danger");
+
+               }
+
+               if (!isset($phone) || strlen($phone) == 10 || !preg_match($regex_phone, $phone)) { 
+                    $info .= alert("Le champs téléphone n'est pas valide", "danger");
+
+               }
+
+               if (!isset($mdp) || strlen($mdp) < 12 || strlen($mdp) > 25 || !preg_match($regex_password, $mdp)) { 
+                    $info .= alert("Le champs mot de passe n'est pas valide", "danger");
+
+               }
+
+               if (!isset($confirmMdp) == isset($mdp)) { 
+                    $info .= alert("Le champs confirmation du mot de passe n'est pas valide", "danger");
+
+               }
+
+               if (!isset($address) || strlen($address) < 1 || strlen($address) > 100 || !preg_match($regex_address, $address)) { 
+                    $info .= alert("Le champs adresse n'est pas valide", "danger");
+
+               }
+
+               if (!isset($zip) || strlen($zip) == 5 || !preg_match($regex_zip, $zip)) { 
+                    $info .= alert("Le champs code postal n'est pas valide", "danger");
+
+               }
+
+               if (!isset($city) || strlen($city) < 2 || strlen($city) > 50 || preg_match($regex, $city)) {
+                    $info .= alert("Le champs city n'est pas valide", "danger");
+
+               }
+               
+               if (!isset($country) || strlen($country) < 2 || strlen($country) > 25 || preg_match($regex, $country)) {
+                    $info .= alert("Le champs pays n'est pas valide", "danger");
+
+               }
+
+
+
+
+
+                    // preg_match vérifie si le phone correspond à l'expression régulière précisée. 
+                    /* La regex s'écrit entre #
+                    Le ^ définit le début de l'expression
+                    Le $ définit la fin de l'expression     
+                    [0-9] définit l'intervalle des chiffres autorisés
+                    si je met {10} c'est que je définit que l'on en veut 10 précisément
+                    */
+               
+
+
+               // if () {
+                    
+               // }
+          }
+
+     }
+
+
 
 
 
@@ -16,6 +137,11 @@ require_once "inc/functions.inc.php";
           <h2 class="text-center mb-5 p-3">Créer un compte</h2>
           <?php
             //    echo  $info;   // pour afficher les messages
+          //   debug($_POST);
+
+            echo $info;
+            echo $info2;
+
           ?>
           <form action="" method="post" class="p-5" >
                <div class="row mb-3">
