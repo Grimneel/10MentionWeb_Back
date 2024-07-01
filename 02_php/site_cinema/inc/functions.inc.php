@@ -1,11 +1,11 @@
 <!-- fichier qui contient les fonctions php à utiliser dans notre site -->
 
 <?php
-
+session_start();
 ########################################### fonction pour débuger ###########################################
 
 
-function debug(){
+function debug($var){
     echo '<pre class="border border-dark bg-light text-primary w-50 p-3>';
         var_dump($var);
     echo '</pre>';
@@ -55,9 +55,15 @@ function alert(string $contenu, string $class){
 
         try { // dans le try on vas instancier PDO, c'est créer un objet de la classe PDO (un élment de PDO)
             // Avec la variable dsn et les constatntes d'environnement
-
+            
             $pdo = new PDO($dsn, DBUSER, DBPASS);
-            echo "Je suis connecté";
+            // echo "Je suis connecté";
+            
+            //On définit le mode d'erreur de PDO sur Exception
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
+            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
             
         } catch (PDOException $e) {
 
@@ -160,9 +166,12 @@ function foreignkey(string $tableF, string $keyF, string $tableP, string $keyP){
 // Création de la clé étrangère dans la table films
 // foreignkey('films', 'category_id', 'categories', 'id_category');
 
+
+
+
 ########################################### fonction du CRUD pour les utilisateurs ###########################################
 // Inscription
-function inscriptionUsers(string $lastname, string $firstname, string $pseudo, string $email, string $phone, string $mdp, string $civility, string $birthday, string $address, string $zip, string $city, string $country){
+function inscriptionUsers(string $lastName, string $firstName, string $pseudo, string $email, string $phone, string $mdp, string $civility, string $birthday, string $address, string $zip, string $city, string $country) :void{
     
     /* Les requêtes préparer sont préconisées si vous exécutez plusieurs fois la même requête. Ainsi vous évitez au SGBD de répéter toutes les phases analyse/ interpretation / exécution de la requête (gain de performance). Les requêtes préparées sont aussi utilisées pour nettoyer les données et se prémunir des injections de type SQL (ce que nous verrons dans un chapitre ultérieur).
 
@@ -175,13 +184,13 @@ function inscriptionUsers(string $lastname, string $firstname, string $pseudo, s
 
     $cnx = connexionBDD();
     $sql = "INSERT INTO users 
-    (lastname, firstname, pseudo, email, phone, mdp, civility, birthday, address, zip, city, country) VALUES (:lastname, :firstname, :pseudo, :email, :phone, :mdp, :civility, :birthday, :address, :zip, :city, :country)";
+    (lastName, firstName, pseudo, email, phone, mdp, civility, birthday, address, zip, city, country) VALUES (:lastName, :firstName, :pseudo, :email, :phone, :mdp, :civility, :birthday, :address, :zip, :city, :country)";
 
     $request = $cnx->prepare($sql); //prepare() est une méthode qui permet de préparer la requête sans l'exécuter. Elle contient un marqueur :nom qui est vide et attend une valeur.
     //$requet est à cette ligne  encore un objet PDOstatement .
     $request->execute(array(
-        ":lastname" => $lastname, 
-        ":firstname" => $firstname, 
+        ":lastName" => $lastName, 
+        ":firstName" => $firstName, 
         ":pseudo" => $pseudo, 
         ":email" => $email, 
         ":phone" => $phone, 
@@ -198,6 +207,70 @@ function inscriptionUsers(string $lastname, string $firstname, string $pseudo, s
 
 
 }
-// inscriptionUsers();
+
+
+
+
+/////////////////////////////////////////// Une fonction pour vérifier si l'email existe déjà dans la BDD /////////////////////////////////////////////////////
+
+function checkEmailUser(string $email) :mixed{
+
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM users WHERE email = :email";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ':email' => $email
+    ));
+
+    $result = $request->fetch(PDO::FETCH_ASSOC); //Le paramètre  PDO::FETCH_ASSOC permet de transformer l'objet en un array ASSOCIATIF.On y trouve en indices le nom des champs de la requête SQL.
+    /**
+     * Pour information, on peut mettre dans les parenthéses de fecth()
+        * PDO::FETCH_NUM pour obtenir un tableau aux indices numèrique
+        * PDO::FETCH_OBJ pour obtenir un dernier objet
+        * ou encore des () vides pour obtenir un mélange de tableau associatif et indéxé
+     */
+
+    return $result;
+}
+
+/////////////////////////////////////////// Une fonction pour vérifier si le pseudo existe déjà dans la BDD /////////////////////////////////////////////////////
+
+function checkPseudoUser(string $pseudo) :mixed{
+
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM users WHERE pseudo = :pseudo";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ':pseudo' => $pseudo
+    ));
+
+    $result = $request->fetch(PDO::FETCH_ASSOC); //Le paramètre  PDO::FETCH_ASSOC permet de transformer l'objet en un array ASSOCIATIF.On y trouve en indices le nom des champs de la requête SQL.
+    /**
+     * Pour information, on peut mettre dans les parenthéses de fecth()
+        * PDO::FETCH_NUM pour obtenir un tableau aux indices numèrique
+        * PDO::FETCH_OBJ pour obtenir un dernier objet
+        * ou encore des () vides pour obtenir un mélange de tableau associatif et indéxé
+     */
+
+    return $result;
+}
+
+/////////////////////////////////////////// Une fonction pour vérifier si un utilisateur est la BDD /////////////////////////////////////////////////////
+
+function checkUser(string $pseudo, string $email) :mixed{
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM users WHERE pseudo = :pseudo AND email = :email";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":pseudo" => $pseudo, 
+        ":email" => $email
+    ));
+    $result = $request->fetch();
+
+    return $result;
+}
+
+
+
 
 ?>

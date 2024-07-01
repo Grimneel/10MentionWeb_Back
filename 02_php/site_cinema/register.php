@@ -3,13 +3,15 @@
 require_once "inc/header.inc.php";
 require_once "inc/functions.inc.php";
 
-$info = "!";
-$info2 = "";
-     if (isset($_POST)) {
-          $info = "\$_POST existe";
-     } else {
-          $info = "\$_POST n'existe pas";
-     }
+$info = "";
+// $info2 = "";
+
+
+//      if (isset($_POST)) {
+//           $info = "\$_POST existe";
+//      } else {
+//           $info = "\$_POST n'existe pas";
+//      }
 
      if (!empty($_POST)) {
           // On vérifie si un champs est vide
@@ -24,12 +26,13 @@ $info2 = "";
                $info = alert("Veuillez renseigner tout les champs", "danger");
           }else {
                // On récupère les valeurs de nos champs et on les stockes dans des variables
+               $lastName = trim($_POST['lastName']);
                $firstName = trim($_POST['firstName']);
                $pseudo = trim($_POST['pseudo']);
                $email = trim($_POST['email']);
                $phone = trim($_POST['phone']);
-               $mdp = trim($_POST['mdp']);
-               $confirmMdp = trim($_POST['confirmMdp']);
+               $mdp = ($_POST['mdp']);
+               $confirmMdp = ($_POST['confirmMdp']);
                $civility = trim($_POST['civility']);
                $birthday = trim($_POST['birthday']);
                $address = trim($_POST['address']);
@@ -39,69 +42,139 @@ $info2 = "";
 
 
                $regex = '/[0-9]/'; // je stocks mon expression rationnelle dans une variable
-               $regex_email = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/"; 
-               $regex_phone = "/^\\+?[1-9][0-9]{7,14}$/";
-               $regex_password = "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/";
-               $regex_date = "^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$";
-               $regex_address = '/^\\d+ [a-zA-Z ]+, \\d+ [a-zA-Z ]+, [a-zA-Z ]+$/';
-               $regex_zip = "/^[0-9]{5}(?:-[0-9]{4})?$/";
 
                if (!isset($lastName) || strlen($lastName) < 2 || strlen($lastName) > 15 || preg_match($regex, $lastName)) { //preg_match — Effectue une recherche de correspondance avec une expression rationnelle standard
                     $info = alert("Le champs nom n'est pas valide", "danger");
 
                }
 
+
                if (!isset($firstName) || strlen($firstName) < 2 || strlen($firstName) > 15 || preg_match($regex, $firstName)) { 
                     $info .= alert("Le champs prénom n'est pas valide", "danger");
 
                }
 
-               if (!isset($pseudo) || strlen($pseudo) < 2 || strlen($pseudo) > 15 || preg_match($regex, $pseudo)) { 
-                    $info .= alert("Le champs pseudo n'est pas valide", "danger");
 
+               if (!isset($pseudo) || strlen($pseudo) < 2 || strlen($pseudo) > 15 ){ 
+                    $info .= alert("Le champs pseudo n'est pas valide", "danger");
                     
                }
 
-               if (!isset($email) || strlen($email) < 5 || strlen($email) > 25 || !preg_match($regex_email, $email)) { 
+
+               // La fonction filter_var() applique un filtre spécifique à une variable. Lorsqu'elle est utilisée avec la constante FILTER_VALIDATE_EMAIL, elle vérifie si la chaîne passée en paramètre est une adresse e-mail valide. Si l'adresse est valide, la fonction retourne la chaîne elle-même ; sinon, elle retourne false.
+               // La constante FILTER_VALIDATE_EMAIL est utilisée dans la fonction filter_var() en PHP pour valider une adresse e-mail. C'est une option de filtrage qui permet de vérifier si une chaîne de caractères est une adresse e-mail valide selon le format standard des e-mails.
+               if (!isset($email) || strlen($email) > 50 || !filter_var($email, FILTER_VALIDATE_EMAIL)) { 
                     $info .= alert("Le champs email n'est pas valide", "danger");
-
                }
 
-               if (!isset($phone) || strlen($phone) == 10 || !preg_match($regex_phone, $phone)) { 
+
+               if (!isset($phone) || !preg_match('/^[0-9]{10}$/', $phone)) { // vérifie si le téléphone contient 10 chiffres
                     $info .= alert("Le champs téléphone n'est pas valide", "danger");
-
                }
 
-               if (!isset($mdp) || strlen($mdp) < 12 || strlen($mdp) > 25 || !preg_match($regex_password, $mdp)) { 
-                    $info .= alert("Le champs mot de passe n'est pas valide", "danger");
 
+               $regexMdp = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&-_])[A-Za-z\d@$!%*?&-_]{8,}$/';
+               /*
+                         ^ : Début de la chaîne.
+                    (?=.*[A-Z]) : Doit contenir au moins une lettre majuscule.
+                    (?=.*[a-z]) : Doit contenir au moins une lettre minuscule.
+                    (?=.*\d) : Doit contenir au moins un chiffre.
+                    (?=.*[@$!%*?&]) : Doit contenir au moins un caractère spécial parmi @$!%*?&.
+                    [A-Za-z\d@$!%*?&]{8,} : Doit être constitué uniquement de lettres majuscules, lettres minuscules, chiffres et caractères spéciaux spécifiés, et doit  avoir une longueur minimale de 8 caractères.
+                    $ : Fin de la chaîne.
+               */
+               if (!isset($mdp) || !preg_match($regexMdp, $mdp) ) {
+
+                    $info .= alert("Le mot de passe n'est pas valide.", "danger");
                }
 
-               if (!isset($confirmMdp) == isset($mdp)) { 
+               if (!isset($confirmMdp) || $confirmMdp !== $mdp){
                     $info .= alert("Le champs confirmation du mot de passe n'est pas valide", "danger");
-
                }
 
-               if (!isset($address) || strlen($address) < 1 || strlen($address) > 100 || !preg_match($regex_address, $address)) { 
-                    $info .= alert("Le champs adresse n'est pas valide", "danger");
-
+               if (!isset($civility) || !in_array($civility, ['h', 'f'])){
+                    $info .= alert("Le champs civility n'est pas valide", "danger");
                }
 
-               if (!isset($zip) || strlen($zip) == 5 || !preg_match($regex_zip, $zip)) { 
-                    $info .= alert("Le champs code postal n'est pas valide", "danger");
 
-               }
-
-               if (!isset($city) || strlen($city) < 2 || strlen($city) > 50 || preg_match($regex, $city)) {
-                    $info .= alert("Le champs city n'est pas valide", "danger");
-
-               }
+               $year1 = ((int) date('Y')) - 13; //2011
+               $month = (date('m'));
+               $date = (date('d'));
+               // date limite supérieure
+               $dateLimitSup = $year1 . "-" . $month . "-" . $date;
+                    
+               //date limite inférieure
+                    
+               $year2 = ((int) date('Y')) - 90;
+               $dateLimitInf = $year2 . "-" . $month . "-" . $date;
+                    
+               if (!isset($birthday) || ($birthday >  $dateLimitSup && $birthday < $dateLimitInf)) {
                
-               if (!isset($country) || strlen($country) < 2 || strlen($country) > 25 || preg_match($regex, $country)) {
-                    $info .= alert("Le champs pays n'est pas valide", "danger");
+                   $info .= alert("La date de naissance n'est pas valide", "danger");
+               }
+
+               if (!isset($address) || strlen($address) < 2 || strlen($address) > 50) { 
+                    $info .= alert("Le champs adresse n'est pas valide", "danger");
+               }
+
+               if (!isset($zip) || !preg_match('/^[0-9]{5}$/', $zip)) {
+                    $info .= alert("Le champs code postal n'est pas valide", "danger");
+               }
+          
+               if (!isset($city) || strlen($city) > 50 || preg_match($regex, $city)) {
+               
+                   $info .= alert("Le champs ville n'est pas valide ", "danger");
+               }
+
+
+               if (!isset($country) || strlen($country) < 5 ||  strlen($country) > 50 || preg_match($regex, $country)) {
+               
+                   $info .= alert("Le champ pays doit contenir entre 5 et 50 caractéres.", "danger");
+               }
+               else if (empty($info)) {
+                    // Vérifier si l'adresse mail existe dans la BDD
+
+                    $emailExist = checkEmailUser($email); // Cette varaible stocke l'utilisateur qui possède l'email renseigner en argument dans la fonction checkEmailUser
+                         // Si l'email n'existe pas dans la BDD, la varibale stocke false
+                    debug($emailExist);
+                    if ($emailExist) {
+                              $info = alert("Ce mail n'est pas disponible", "danger");
+                    }
+
+
+                         // Vérifier si le pseudo existe dans la BDD
+
+
+                    $pseudoExist = checkPseudoUser($pseudo); 
+
+                    if ($pseudoExist) {
+
+                              $info = alert("Ce pseudo est déjà utilisé !", "danger");
+                    }
+
+                    // Vérifier si le pseudo existe dans la BDD
+                    if ($emailExist || $pseudoExist){
+
+                         $info = alert("Vous avez déjà un compte" , "danger");
+
+                    }else if (empty($info)) {
+                         
+                         $mdpHash = password_hash($mdp, PASSWORD_DEFAULT); // Cette fonction PHP crée un hachage sécurisé d'un mot de passe en utilisant un algorithme de hachage fort : génère une chaîne de caractères unique à partir d'une entrée. C'est un mécanisme unidirectionnel dont l'utilité est d'empêcher le déchiffrement d'un hash. Lors de la connexion, il faudra comparer le hash stocké dans la base de données avec celui du mot de passe fourni par l'internaute.
+                         // PASSWORD_DEFAULT : constante indique à password_hash() d'utiliser l'algorithme de hachage par défaut actuel c'est le plus recommandé car elle garantit que le code utilisera toujours le meilleur algorithme disponible sans avoir besoin de modifications.
+                         // debug($mdpHash);
+
+                         inscriptionUsers($lastName, $firstName, $pseudo, $email, $phone, $mdpHash , $civility, $birthday, $address, $zip, $city, $country);
+                         $info = alert('Vous êtes bien inscrit, vous pouvez <a href="authentification.php" class="text-danger fw-bold">vous connectez</a>', 'success');
+
+                    }
+                    
+
 
                }
 
+          }
+
+     }
 
 
 
@@ -119,9 +192,8 @@ $info2 = "";
                // if () {
                     
                // }
-          }
 
-     }
+     
 
 
 
@@ -132,6 +204,9 @@ $info2 = "";
 
 
 <main style="background:url(assets/img/5818.png) no-repeat; background-size: cover; background-attachment: fixed;">
+     <?php
+     var_dump($_POST); 
+     ?>
    
    <div class="w-75 m-auto p-5" style="background: rgba(20, 20, 20, 0.9);">
           <h2 class="text-center mb-5 p-3">Créer un compte</h2>
@@ -140,7 +215,6 @@ $info2 = "";
           //   debug($_POST);
 
             echo $info;
-            echo $info2;
 
           ?>
           <form action="" method="post" class="p-5" >
@@ -234,7 +308,7 @@ $info2 = "";
 <?php
 
 require_once "inc/footer.inc.php";
-var_dump($_POST);
+
 
 
 ?>
