@@ -1,7 +1,17 @@
 <!-- fichier qui contient les fonctions php à utiliser dans notre site -->
-
 <?php
+
+// Déclaration du lancement de la session
 session_start();
+
+/////////////////////////////////////////////////////////////////////// constante pour définir le chemin du site /////////////////////////////////////////////////////////
+
+ // constante qui définit les dossiers dans lesquels se situe le site pour pouvoir déterminer des chemins absolus à partir de localhost (on ne prends localhost). Ainsi nous écrivons tous les chemins (exp : src, href ) en absolu avec cette constante
+
+ define("RACINE_SITE", "http://10mentionweb_back.local/02_php/site_cinema/");
+
+
+
 ########################################### fonction pour débuger ###########################################
 
 
@@ -20,11 +30,20 @@ function alert(string $contenu, string $class){
                 <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>
             </div>";
 
+}
 
+########################################### fonction pour la deconnexion ###########################################
 
+function logOut(){
 
+    if (isset($_GET['action']) && $_GET['action'] == 'deconnexion') {
+        
+        unset($_SESSION['user']);
+        header('location:index.php');
+    }
 
 }
+logOut();
 
 
 ########################################### fonction pour la connexion à la BDD ###########################################
@@ -268,6 +287,40 @@ function checkUser(string $pseudo, string $email) :mixed{
     $result = $request->fetch();
 
     return $result;
+};
+
+
+
+////////////////////////////////////////////////////////// fonctions pour récupérer tout les utilisateurs //////////////////////////////////////////////////////////
+
+function allUsers() :mixed{
+
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM users";
+    $request = $cnx->query($sql);
+    $result = $request->fetchAll(); // fetchAll() récupère tout les résultats dans la reqûête et les sort sous forme d'un tableau à 2 dismensions
+    
+
+    return $result;
+
+}
+
+
+/////////////////////////////////////////// fonction pour supprimer un utilisateur /////////////////////////////////////////////////////
+
+function deleteUser(int $id_user) :void{
+
+    $cnx = connexionBDD();
+    $sql = "DELETE FROM users WHERE id_user = :id_user";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+
+
+        ":id_user"=>$id_user
+    ));
+    
+
+
 }
 
 

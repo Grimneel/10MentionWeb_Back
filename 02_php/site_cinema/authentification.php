@@ -51,13 +51,42 @@
             // permet de démarrer une nouvelle session ou reprendre une session déjà existante. On utilise une session quand cette fonction est estexécutée, le serveur vérifie si la sesssion  qui a le même identifiant envoyé existe 
             //Ensuite on stock les données dans cette session
             $_SESSION['user'] = $user;
-            debug($_SESSION('user'));
+            debug($_SESSION['user']);
+            die();
+            // nous créons une session avec les infos de l'utilisateur provenant de la BDD. 
+            //  cette variable créé et affecté dans cette page sera accessible partout dans le site une fois la fonction session_start() est appelé
+
+              //header('location:profil.php'); // rediriger l'utilisateur vers la page profil.php
+              // header() est une fonction de base dans php
+
+
+        }else {
+          $info = alert('Les identifiants sont incorrectes', 'danger');
         }
+
+
+
+    }else {
+      $info = alert('Les identifiants sont incorrectes', 'danger');
     }
     }
   }
 
+
+
+
+
+
+
+
 ?>
+
+
+
+
+
+
+
 
 <main style="background:url(assets/img/5818.png) no-repeat; background-size: cover; background-attachment: fixed;">
      <?php
@@ -93,7 +122,7 @@
                     </div>
                 
                         <button class="w-25 m-auto btn btn-danger btn-lg fs-5" type="submit">Se connecter</button>
-                        <p class="mt-5 text-center">Vous n'avez pas encore de compte ! <a href="register.php" class=" text-danger">créer un compte ici</a></p>
+                        <p class="mt-5 text-center">Vous n'avez pas encore de compte ! <a href="register.php" class=" text-danger">Se connecter</a></p>
                 </div>
         </form>
    </div>
