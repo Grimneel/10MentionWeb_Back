@@ -65,6 +65,8 @@
     
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?=RACINE_SITE?>profil.php">Compte</a>
+                                    <h4>Example heading <span class="badge text-bg-secondary">New</span></h4>
+
                                 </li>
     
                                 <?php

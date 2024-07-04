@@ -23,7 +23,21 @@ require_once "../inc/header.inc.php";
 
 
         }
+        if ($_GET['action'] == 'update' && !empty($_GET['id_user'])) {
+        
+            $idUser = htmlentities($_GET['id_user']);
+            $user = showUser($idUser);
 
+            if ($user['role'] == 'ROLE_ADMIN') {
+                updateRole('ROLE_USER', $idUser);
+            } else {
+                updateRole('ROLE_ADMIN', $idUser);
+            }
+            
+
+        }
+
+        header('location:users.php');
 
     }
 
@@ -33,64 +47,54 @@ require_once "../inc/header.inc.php";
             <h2 class="text-center fw-bolder mb-5 text-danger">Liste des utilisateurs</h2>
             <table class="table  table-dark table-bordered mt-5">
                 <thead>
-                <tr>
-                <!-- th*7 -->
-                    <th>ID</th>
-                    <th>FirstName</th>
-                    <th>LastName</th>
-                    <th>Pseudo</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Civility</th>
-                    <th>Address</th>
-                    <th>Zip</th>
-                    <th>City</th>
-                    <th>Country</th>
-                    <th>Rôle actuel</th>
-                    <th>Supprimer</th>
-                    <th>Modifier Le rôle</th>
-                </tr>
+                    <tr>
+                    <!-- th*7 -->
+                        <th>ID</th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Pseudo</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Civility</th>
+                        <th>Address</th>
+                        <th>Zip</th>
+                        <th>City</th>
+                        <th>Country</th>
+                        <th>Rôle actuel</th>
+                        <th>Supprimer</th>
+                        <th>Modifier Le rôle</th>
+                    </tr>
                 </thead>
-            <tbody>
+                <tbody>
+                    <?php
 
-
-            <?php
-
-                foreach ($users as $key => $user) {
-                        //$variable as $key => $value
-
-            ?>
-                <tr>
-                    <td><?= $user['id_user']?></td>
-                    <td><?= $user['firstName']?></td>
-                    <td><?= $user['lastName']?></td>
-                    <td><?= $user['pseudo']?></td>
-                    <td><?= $user['email']?></td>
-                    <td><?= $user['phone']?></td>
-                    <td><?= $user['civility']?></td>
-                    <td><?= $user['address']?></td>
-                    <td><?= $user['zip']?></td>
-                    <td><?= $user['city']?></td>
-                    <td><?= $user['country']?></td>
-                    <td><?= $user['role']?></td>
-                    <td class="text-center"><a href="?action=delete&id_user=<?= $user['id_user']?>"><i class="bi bi-trash3"></i></a></td>
-                    <td></td>
-                </tr>
-            <?php
-                }
-            ?>
-
-
-
-
-
-
-
-
-
-
-
-            </tbody>
+                        foreach ($users as $key => $user) {
+                                //$variable as $key => $value
+                    ?>
+                        <tr>
+                            <td><?= $user['id_user']?></td>
+                            <td><?= $user['firstName']?></td>
+                            <td><?= $user['lastName']?></td>
+                            <td><?= $user['pseudo']?></td>
+                            <td><?= $user['email']?></td>
+                            <td><?= $user['phone']?></td>
+                            <td><?= $user['civility']?></td>
+                            <td><?= $user['address']?></td>
+                            <td><?= $user['zip']?></td>
+                            <td><?= $user['city']?></td>
+                            <td><?= $user['country']?></td>
+                            <td><?= $user['role']?></td>
+                            <td class="text-center"><a href="?action=delete&id_user=<?= $user['id_user']?>"><i class="bi bi-trash3"></i></a></td>
+                            <td class="text-center">
+                                <a href="?action=update&id_user=<?= $user['id_user']?>" class="btn btn-danger">
+                                    <?= $user['role'] == 'ROLE_ADMIN' ? 'Rôle_user' : 'Rôle_admin' ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php
+                        }
+                    ?>
+                </tbody>
         </table>
          
     </div>
