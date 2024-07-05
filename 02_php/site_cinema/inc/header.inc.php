@@ -64,8 +64,7 @@
                             ?>
     
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<?=RACINE_SITE?>profil.php">Compte</a>
-                                    <h4>Example heading <span class="badge text-bg-secondary">New</span></h4>
+                                    <a class="nav-link" href="<?=RACINE_SITE?>profil.php">Compte <sup class="badge text-bg-danger text-bg-secondary"><?=$_SESSION['user']['firstName']?></sup></a>
 
                                 </li>
     
@@ -85,18 +84,16 @@
                                         </li>  
                                     
     
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Backoffice</a>
-                                </li>
+                            
     
-                                <li class="nav-item">
-                                    <a class="nav-link" href="?action=deconnexion">Déconnexion</a>
-                                </li>
+                               
     
-                                
                             <?php
                                 }
                             ?>
+                             <li class="nav-item">
+                                    <a class="nav-link" href="?action=deconnexion">Déconnexion</a>
+                                </li>
                         <?php
                             }
                         ?>

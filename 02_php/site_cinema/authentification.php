@@ -1,6 +1,6 @@
 <?php
-  require_once "inc/header.inc.php";
   require_once "inc/functions.inc.php";
+  
   
   $info = "";
 
@@ -52,7 +52,7 @@
             //Ensuite on stock les données dans cette session
             $_SESSION['user'] = $user;
             debug($_SESSION['user']);
-            die();
+            // die();
             // nous créons une session avec les infos de l'utilisateur provenant de la BDD. 
             //  cette variable créé et affecté dans cette page sera accessible partout dans le site une fois la fonction session_start() est appelé
 
@@ -78,7 +78,7 @@
 
 
 
-
+require_once "inc/header.inc.php";
 ?>
 
 

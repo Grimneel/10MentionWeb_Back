@@ -39,7 +39,7 @@ function logOut(){
     if (isset($_GET['action']) && $_GET['action'] == 'deconnexion') {
         
         unset($_SESSION['user']);
-        header('location:index.php');
+        header('location:'.RACINE_SITE.'index.php');
     }
 
 }
@@ -404,20 +404,20 @@ function checkCategoryId(string $nameCategory) :mixed{
 
 /////////////////////////////////////////// fonction pour supprimer une catégorie /////////////////////////////////////////////////////
 
-function deleteCategory(string $nameCategory) :void{
+// function deleteCategory(string $nameCategory) :void{
 
-    $cnx = connexionBDD();
-    $sql = "DELETE FROM categories WHERE name = :name";
-    $request = $cnx->prepare($sql);
-    $request->execute(array(
+//     $cnx = connexionBDD();
+//     $sql = "DELETE FROM categories WHERE name = :name";
+//     $request = $cnx->prepare($sql);
+//     $request->execute(array(
 
 
-        ":nameCategory"=>$nameCategory
-    ));
+//         ":nameCategory"=>$nameCategory
+//     ));
     
 
 
-}
+// }
 
 
 
@@ -453,6 +453,97 @@ function showUser(int $id_user): mixed {
     return $result;
 }
 
+
+
+########################################### fonction du CRUD pour les catégorie ###########################################
+
+/////////////////////////////////////////// fonction pour récuperer une seul catégorie /////////////////////////////////////////////////////
+
+
+function showCategory(string $name){
+
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM categories WHERE name = :name";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":name" => $name
+    ));
+    $result = $request->fetch();
+    return $result;
+
+}
+
+function showCategoryViaId(int $id){
+
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM categories WHERE id_category = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":id" => $id
+    ));
+
+
+    $result = $request->fetch();
+    return $result;
+
+}
+
+///////////////////////////////////////////  fonction pour insérer une catégorie //////////////////////////////////////////
+
+function addCategory(string $nameCategory, string $description) : void {
+
+    $pdo = connexionBdd();
+    $sql= "INSERT INTO categories (name, description) VALUES (:name, :description)"; // requête d'insertion que je stock dans une variable
+    $request = $pdo->prepare($sql); // je prépare ma fonction et je l'exécute
+    $request->execute(array(
+
+            ':name' => $nameCategory,
+            ':description' => $description
+    ));
+
+}
+
+//////////////////////////////////////// Une fonction pour récupérer toutes les catégories //////////////////////////////////////////////
+
+function allCategories() : mixed{
+        
+    $pdo = connexionBdd();
+    $sql= "SELECT * FROM categories"; // requête d'insertion que je stock dans une variable
+    $request = $pdo->query($sql); 
+    $result = $request->fetchAll();// j'utilise fetchAll() pour récupérer toute les ligne à la fois 
+    return $result; // ma fonction retourne un tableau ave les données récupérer de la BDD
+}
+
+//////////////////////////////////////// Une fonction pour supprimer une catégorie//////////////////////////////////////////////
+
+function deleteCategory(int $id) :void {
+
+    $pdo = connexionBdd();
+    $sql = "DELETE FROM categories WHERE id_category = :id";
+    $request = $pdo->prepare($sql);
+    $request->execute(array(
+        ':id' => $id
+    ));
+
+
+}
+
+//////////////////////////////////////// Une fonction pour modifier une catégorie //////////////////////////////////////////////
+
+
+function updateCategory(int $id, string $name, string $description) :void {
+
+    $pdo = connexionBdd();
+    $sql = "UPDATE categories SET name = :name, description = :description WHERE id_category = :id";
+    $request = $pdo->prepare($sql);
+    $request->execute(array(
+        ':id' => $id,
+        ':name' => $name,
+        ':description' => $description
+    ));
+
+
+}
 
 
 

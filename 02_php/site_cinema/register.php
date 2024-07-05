@@ -1,7 +1,7 @@
 <?php
 
 require_once "inc/functions.inc.php";
-require_once "inc/header.inc.php";
+
 
 $info = "";
 // $info2 = "";
@@ -198,7 +198,7 @@ $info = "";
 
 
 
-
+require_once "inc/header.inc.php";
 ?>
 
 

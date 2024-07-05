@@ -1,6 +1,5 @@
 <?php
 require_once "../inc/functions.inc.php";
-require_once "../inc/header.inc.php";
 
     $users = allUsers();
     // debug($users);
@@ -41,10 +40,29 @@ require_once "../inc/header.inc.php";
 
     }
 
+    // gestion de l'accessibilité des pages admin
+
+    if (empty($_SESSION['user'])) {
+        header('location:'.RACINE_SITE.'authentification.php');
+    } else {
+        if ($_SESSION['user']['role']== 'ROLE_USER') {
+
+            header('location:'.RACINE_SITE.'index.php');
+        }
+    }
+    
+
+
+
+require_once "../inc/header.inc.php";
 ?>
 <div class="d-flex flex-column m-auto mt-5 table-responsive">   
         <!-- tableau pour afficher toutles films avec des boutons de suppression et de modification -->
             <h2 class="text-center fw-bolder mb-5 text-danger">Liste des utilisateurs</h2>
+
+
+
+            
             <table class="table  table-dark table-bordered mt-5">
                 <thead>
                     <tr>
