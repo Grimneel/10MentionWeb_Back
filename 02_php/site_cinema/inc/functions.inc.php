@@ -662,4 +662,29 @@ function deleteFilm(int $id) :void {
         ':id' => $id
     ));
 }
+
+
+//////////////////////////////////////// Une fonction pour modifier un film //////////////////////////////////////////////
+
+
+function updateFilm(string $title, string $director, string $actors, string $ageLimit,  string $duration, string $date, float $price, int $stock, string $synopsis, string $image, int $category_id) :void {
+
+    $pdo = connexionBdd();
+    $sql = "UPDATE films SET title = :title, director = :director, actors = :actors, ageLimit = :ageLimit, duration = :duration, date = :date, price = :price, stock = :stock, synopsis = :synopsis, image = :image, category_id = :category_id WHERE id_film = :id";
+    $request = $pdo->prepare($sql);
+    $request->execute(array(
+        'title' => $title,
+        'director' => $director,
+        'actors' => $actors,
+        'ageLimit' => $ageLimit,
+        'duration' => $duration,
+        'date' => $date,
+        'price' => $price,
+        'stock' => $stock,
+        'synopsis' => $synopsis,
+        'image' => $image,
+        'category_id' => $category_id
+    ));
+
+}
 ?>
