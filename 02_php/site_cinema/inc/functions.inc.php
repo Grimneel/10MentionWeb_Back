@@ -546,6 +546,120 @@ function updateCategory(int $id, string $name, string $description) :void {
 }
 
 
+########################################### fonction du CRUD pour les films ###########################################
+
+/////////////////////////////////////////// Une fonction pour vérifier si le film existe déjà dans la BDD /////////////////////////////////////////////////////
+
+function checkFilmId(string $title) :mixed{
+
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM films WHERE title = :title";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ':title' => $title
+    ));
+
+    $result = $request->fetch(PDO::FETCH_ASSOC); //Le paramètre  PDO::FETCH_ASSOC permet de transformer l'objet en un array ASSOCIATIF.On y trouve en indices le nom des champs de la requête SQL.
+
+    return $result;
+}
+
+///////////////////////////////////////////  fonction pour insérer un film //////////////////////////////////////////
 
 
+function addFilm(string $title, string $director, string $actors, string $ageLimit,  string $duration, string $date, float $price, int $stock, string $synopsis, string $image, int $category_id) : void {
+
+    
+
+        $data = [
+            'title' => $title,
+            'director' => $director,
+            'actors' => $actors,
+            'ageLimit' => $ageLimit,
+            'duration' => $duration,
+            'date' => $date,
+            'price' => $price,
+            'stock' => $stock,
+            'synopsis' => $synopsis,
+            'image' => $image,
+            'category_id' => $category_id
+        ];
+
+        foreach ($data as $key => $value) {
+            $data[$key] = htmlentities($value);
+    
+        }
+
+        $cnx = connexionBdd();
+        $sql= "INSERT INTO films (title, director, actors, ageLimit, duration, date, price, stock, synopsis, image, category_id) VALUES (:title, :director, :actors,  :ageLimit, :duration, :date, :price, :stock, :synopsis, :image, :category_id)"; // requête d'insertion que je stock dans une variable
+        $request = $cnx->prepare($sql); // je prépare ma fonction et je l'exécute
+        
+        // $cnx = connexionBDD();
+        // $sql = "INSERT INTO films 
+        // (title, director, actors, genre, duration, date, price, stock, synopsis) VALUES (:title, :director, :actors, :genre, :duration, :date,  :price, :stock, :synopsis)";
+
+        $request = $cnx->prepare($sql); //prepare() est une méthode qui permet de préparer la requête sans l'exécuter. Elle contient un marqueur :nom qui est vide et attend    une valeur.
+        //$requet est à cette ligne  encore un objet PDOstatement .
+        $request->execute(array(
+            ":title" => $data['title'], 
+            ":director" => $data['director'], 
+            ":actors" => $data['actors'], 
+            ":ageLimit" => $data['ageLimit'],
+            ":duration" => $data['duration'], 
+            ":date" => $data['date'], 
+            ":price" => $data['price'], 
+            ":stock" => $data['stock'], 
+            ":synopsis" => $data['synopsis'],
+            ":image" => $data['image'],
+            ":category_id" => $data['category_id'],
+        
+    ));
+
+}
+
+
+//////////////////////////////////////// Une fonction pour récupérer touts les films //////////////////////////////////////////////
+
+function allFilms() : mixed{
+        
+    $pdo = connexionBdd();
+    $sql= "SELECT * FROM films"; // requête d'insertion que je stock dans une variable
+    $request = $pdo->query($sql); 
+    $result = $request->fetchAll();// j'utilise fetchAll() pour récupérer toute les ligne à la fois 
+    return $result; // ma fonction retourne un tableau ave les données récupérer de la BDD
+}
+
+
+
+/////////////////////////////////////////// fonction pour récuperer une seul catégorie /////////////////////////////////////////////////////
+
+
+function showFilmViaId(int $id){
+
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM films WHERE id_film = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":id" => $id
+    ));
+
+
+    $result = $request->fetch();
+    return $result;
+
+}
+
+
+
+//////////////////////////////////////// Une fonction pour supprimer un film//////////////////////////////////////////////
+
+function deleteFilm(int $id) :void {
+
+    $pdo = connexionBdd();
+    $sql = "DELETE FROM films WHERE id_film = :id";
+    $request = $pdo->prepare($sql);
+    $request->execute(array(
+        ':id' => $id
+    ));
+}
 ?>

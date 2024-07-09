@@ -29,17 +29,23 @@ if (!empty($_POST)) {
     }
 
     // la superglobale $_FILES a un indice "image" qui correspond au "name" de l'input type="file" du formulaire, ainsi qu'un indice "name" qui contient le nom du fichier en cours de téléchargement.
-    if (!empty($_FILES['image']['name'])) { //si le nom du fichier en cours de téléchargement n'est pas vide, alors c'est qu'on est en train de télécharger une photo
+    // Vérifie si le champ 'image' du tableau $_FILES n'est pas vide, ce qui signifie qu'un fichier est en cours de téléchargement.
+    if (!empty($_FILES['image']['name'])) {  // $_FILES['image']['name'] contient le nom original du fichier téléchargé.
 
-        $image = 'img/'.$_FILES['image']['name'];  // $image contient le chemin relatif de la photo et sera enregistré en BDD. On utilise ce chemin pour les "src" des balises <img>.
+        // Définit la variable $image avec le nom du fichier téléchargé.
+        // Cela crée le chemin relatif vers l'image qui sera utilisé pour stocker l'image et peut être utilisé dans les balises <img>.
+        $image =  $_FILES['image']['name'];
         
-        copy($_FILES['image']['tmp_name'],'../assets/'.$image );
-      
-        // on enregistre le fichier image qui se trouve à l'adresse contenue dans $_FILES['image']['tmp_name'] vers la destination qui est le dossier "img" à l'adresse "../asstes/nom_du_fichier.jpg".
+        // Utilise la fonction copy() pour copier le fichier temporaire téléchargé (stocké à l'adresse contenue dans $_FILES['image']['tmp_name'])
+        // vers un emplacement permanent. Le fichier est déplacé dans le dossier "../assets/img/" avec le nom original du fichier.
+
+        // copy() prend deux arguments : le chemin source (le fichier temporaire) et le chemin de destination.
+        copy($_FILES['image']['tmp_name'], '../assets/img/' . $image); // $_FILES['image']['tmp_name'] contient le chemin temporaire où le fichier est stocké après le téléchargement.
     }
 
     if($verif == false || empty($image)){  // si la variable $verif passe en false ou la variable $image est vide 
         $info = alert("Veuillez renseigner tout les champs", "danger");
+
     } else {
 
         // on vérifie l'image : 
@@ -49,24 +55,23 @@ if (!empty($_POST)) {
             // $_FILES ['image']['tmp_name'] Emplacement temporaire
             // $_FILES ['image']['error'] Erreur si oui/non l'image a été réceptionné
 
-            debug($_FILES['image']['name']);
-            debug($_FILES['image']['type']);
-            debug($_FILES['image']['size']);
-            debug($_FILES['image']['tpm_name']);
-            debug($_FILES['image']['error']);
+            // debug($_FILES['image']['name']);
+            // debug($_FILES['image']['type']);
+            // debug($_FILES['image']['size']);
+            // debug($_FILES['image']['tpm_name']);
+            // debug($_FILES['image']['error']);
 
 
         if($_FILES['image']['error'] != 0 || $_FILES['image']['size'] == 0 || !isset($_FILES['image']['type'])){
 
                 $info .= alert("L'image n'est pas valide","danger");
-    
-    
+
         }
         
         $title = trim($_POST['title']);
-        $image = trim($_POST['image']);
         $director = trim($_POST['director']);
-        $actor = trim($_POST['actors']);
+        $actors = trim($_POST['actors']);
+        $genre = trim($_POST['categories']);
         $ageLimit = trim($_POST['ageLimit']);
         $duration = trim($_POST['duration']);
         $date = trim($_POST['date']);
@@ -74,45 +79,68 @@ if (!empty($_POST)) {
         $stock = trim($_POST['stock']);
         $synopsis = trim($_POST['synopsis']);
 
+        $regex_chiffre = '/[0-9]+/';
+        $regex_acteur = '/.*\/.*/';
+
         // validation
-        if (!isset($title)) {
-            $info = alert("le champs titre n'est pas valide", "danger");
+        if (!isset($title) || strlen($title) < 2 ) {
+
+            $info .= alert("le champ titre n'est pas valide ", "danger");
+
         }
 
-        if (!isset($director)) {
-            $info = alert("le champs réalisateur n'est pas valide", "danger");
+        if (!isset($title) || strlen($director) <= 2 || preg_match($regex_chiffre, $director) ) {
+
+            $info .= alert("le champ réalisateur n'est pas valide ", "danger");
+
         }
 
-        if (!isset($image)) {
-            $info = alert("le champs image n'est pas valide", "danger");
+        //Explications: 
+            //    .* : correspond à n'importe quel nombre de caractères (y compris zéro caractère), sauf une nouvelle ligne.
+            //     \/ : correspond au caractère /. Le caractère / doit être précédé d'un backslash \ car il est un caractère spécial en expression régulière. Le backslash est appelé caractère d'échappement et il permet de spécifier que le caractère qui suit doit être considéré comme un caractère ordinaire.
+            //     .* : correspond à n'importe quel nombre de caractères (y compris zéro caractère), sauf une nouvelle ligne.
+
+            if( !isset($actors) || strlen($actors) < 3 || preg_match($regex_chiffre, $actors) || !preg_match($regex_acteur, $actors) ){ // valider que l'utilisateur a bien inséré le symbole '/' : chaîne de caractères qui contient au moins un caractère avant et après le symbole /.
+            
+                $info .= alert("Le champs acteurs n'est pas valide, il faut séparer les acteurs avec le symbole","danger");
+    
+            }
+        
+        if (!isset($genre) || showCategoryViaId($genre) == false) { // valider que l'utilisateur a bien inséré le symbole "/" : chaîne de caractères qui contient au moins un caractère avant et après le symbole
+
+            $info .= alert("le champs genre n'est pas valide", "danger");
         }
 
-        if (!isset($actor)) {
-            $info = alert("le champs nom de la catégorie n'est pas valide", "danger");
-        }
-
-        if (!isset($ageLimit)) {
-            $info = alert("le champs nom de la catégorie n'est pas valide", "danger");
-        }
 
         if (!isset($duration)) {
-            $info = alert("le champs nom de la catégorie n'est pas valide", "danger");
+
+            $info .= alert("le champs durée n'est pas valide", "danger");
         }
 
         if (!isset($date)) {
-            $info = alert("le champs nom de la catégorie n'est pas valide", "danger");
+
+            $info .= alert("le champs date n'est pas valide", "danger");
         }
 
-        if (!isset($price)) {
-            $info = alert("le champs nom de la catégorie n'est pas valide", "danger");
+        if (!isset($price) || !is_numeric($price)) {
+
+            $info .= alert("le champs prix n'est pas valide", "danger");
         }
 
         if (!isset($stock)) {
-            $info = alert("le champs nom de la catégorie n'est pas valide", "danger");
+
+            $info .= alert("le champs stock n'est pas valide", "danger");
         }
 
-        if (!isset($synopsis)) {
-            $info = alert("le champs nom de la catégorie n'est pas valide", "danger");
+        if (!isset($synopsis) || strlen($synopsis) < 50) {
+
+            $info .= alert("le champs synopsis n'est pas valide", "danger");
+
+        } elseif (empty($info)) {
+
+            addFilm($title, $director, $actors, $ageLimit, $duration, $date, $price, $stock, $synopsis, $image,  $genre );
+            header('location:films.php');
+
         }
 
     }
@@ -169,9 +197,9 @@ require_once "../inc/header.inc.php";
 
         <!--  Ici c'est les catégories qui sont déjà stockés dans la BDD et qu'on vas les récupérer à partir de cette dernière -->
             <?php
-            $categories = allCategories();
+            $films = allFilms();
 
-            foreach ($categories as $key => $categorie) {
+            foreach ($films as $key => $film) {
 
             ?>
 
