@@ -138,14 +138,26 @@ if (!empty($_POST)) {
 
         } elseif (empty($info)) {
 
-            addFilm($title, $director, $actors, $ageLimit, $duration, $date, $price, $stock, $synopsis, $image,  $genre );
-            header('location:films.php');
+            if (verifFilm($title, $date)) { // si le film existe dans la BDD
+
+                // J'affiche un message d'erreur
+                $info = alert('Le film existe déjà','danger');
+
+
+            }else{ // Si le film 
+
+                // Je l'insère dans la BDD
+                addFilm($title, $director, $actors, $ageLimit, $duration, $date, $price, $stock, $synopsis, $image,  $genre );
+                header('location:films.php');
+
+            }
 
         }
 
     }
 
 }
+
 
 
 require_once "../inc/header.inc.php";
@@ -197,9 +209,9 @@ require_once "../inc/header.inc.php";
 
         <!--  Ici c'est les catégories qui sont déjà stockés dans la BDD et qu'on vas les récupérer à partir de cette dernière -->
             <?php
-            $films = allFilms();
+            $categories = allcategories();
 
-            foreach ($films as $key => $film) {
+            foreach ($categories as $key => $categorie) {
 
             ?>
 

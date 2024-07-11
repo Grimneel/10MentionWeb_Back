@@ -1,86 +1,126 @@
 <?php
+
+
 require_once "../inc/functions.inc.php";
+
+if(empty($_SESSION['user']) ) {
+
+    header("location:".RACINE_SITE."authentification.php");
+
+}else{
+
+if ( $_SESSION['user']['role'] == 'ROLE_USER') {
+
+    header("location:".RACINE_SITE."index.php");
+}
+
+}
+   
+
+
+
+$films = allFilms();
+
+ 
+foreach ($films as $key => $imagesFilm) {
+    $imagesFilm = $film['image']['alt'];
+
+}
+
+
+
 require_once "../inc/header.inc.php";
-
-
 ?>
 
-<div class="col-sm-12 col-md-6 d-flex flex-column mt-5 pe-3">  
-        <!-- tableau pour afficher toute les catégories avec des boutons de suppression et de modification -->
-        <h2 class="text-center fw-bolder mb-5 text-danger">Liste des films</h2>
-        <?php
+<div class="d-flex flex-column m-auto mt-5">
 
-            $films = allFilms();
-
-
-        ?>
-       
-        <table class="table table-dark table-bordered mt-5 " >
-            <thead>
-                    <tr>
+    <h2 class="text-center fw-bolder mb-5 text-danger">Liste des films</h2>
+    <a href="gestionFilms.php" class="btn align-self-end"> Ajouter un film</a>
+    <table class="table table-dark table-bordered mt-5 " >
+            <thea>
+                    <tr >
                     <!-- th*7 -->
                         <th>ID</th>
-                        <th>title</th>
-                        <th>Director</th>
-                        <th>Actors</th>
-                        <th>Age limit</th>
+                        <th>Titre</th>
+                        <th>Affiche</th>
+                        <th>Réalisateur</th>
+                        <th>Acteurs</th>
+                        <th>Àge limite</th>
+                        <th>Genre</th>
                         <th>Durée</th>
-                        <th>Date</th>
                         <th>Prix</th>
                         <th>Stock</th>
                         <th>Synopsis</th>
-                        <th>Image</th>
+                        <th>Date de sortie</th>
                         <th>Supprimer</th>
-                        <th>Modifier</th>
+                        <th> Modifier</th>
                     </tr>
-            </thead>
+            </thea>
             <tbody>
 
-            <?php
-            
-                foreach ($films as $key => $film) {
-                    
-            ?>
-             
-                    <tr>
-                        <td><?= $film['id_film']?></td>
-                        <td><?= html_entity_decode(ucfirst($film['title'])) ?></td> <!-- une majuscule sur la première lettre avec ucfirst()-->
-                        <td><?= html_entity_decode(ucfirst($film['director'])) ?></td>
-                        <td><?= html_entity_decode(ucfirst($film['actors'])) ?></td>
-                        <td><?= html_entity_decode(ucfirst($film['ageLimit'])) ?></td>
-                        <td><?= html_entity_decode(ucfirst($film['duration'])) ?></td>
-                        <td><?= html_entity_decode(ucfirst($film['date'])) ?></td>
-                        <td><?= html_entity_decode(ucfirst($film['price'])) ?></td>
-                        <td><?= html_entity_decode(ucfirst($film['stock'])) ?></td>
-                        <td><?=substr(html_entity_decode(ucfirst($film['synopsis'])), 0, 100 )?></td> <!-- Convertit les entités HTML à leurs caractères correspondant -->
-                        <td><?= html_entity_decode(ucfirst($film['image'])) ?></td>
-                        <td class="text-center"><a href="?action=delete&id_film=<?= $film['id_film']?>"><i class="bi bi-trash3-fill"></i></a></td>
-                        <td class="text-center"><a href="?action=update&id_film=<?= $film['id_film']?>"><i class="bi bi-pen-fill"></i></a></td>
-                    </tr>
-               
-            <?php
+                <?php
 
-                }   
-            
-            ?>
+                foreach($films as $key => $film){
+                    //Avant l'affichage des données il fautr formater quelques une:
+
+
+                   $actors= stringToArray($film['actors']); // je transforme la chaîne de caratcétre récupérée à partrir de l'élément $film['actors'] du tableau $film en un tableau avec la fonction stringToArray()
+
+                    // la catégorie du film
+                   $category = showCategoryViaId($film['category_id']);
+                   $categoryName = $category['name'];
+
+                   //Gérer l'affichage de la durée
+                        // $objet = new NomDeLaClasse();
+                        $date_time = new DateTime($film['duration']); // nous créeons un nouvel objet DateTime en passant  la valeur de l'input de type time  en tant que paramètre
+                        $duration = $date_time->format('H:i');// Nous utilisons ensuite la méthode format() pour extriare l'heure et les minutes au format 'H:i'
+
+
+                        ?>
+                        <tr>
+                            <!-- Je récupére les valeus de mon tabelau $film dans des td -->
+                            <td><?= $film['id_film'] ?></td>
+                            <td> <?= $film['title'] ?></td>
+                            <td> <img src="<?=RACINE_SITE."assets/img/". $film['image'] ?>" alt="affiche du film" class="img-fluid"></td>
+                            <td> <?= $film['director'] ?></td>
+                            <td>
+                                <ul>
+                                <?php
+                                foreach($actors as $key => $actor){
+                                    ?>
+                                    <li><?= $actor;?></li>
+                                    <?php
+                                }
+                                ?>
+                                </ul>
+                            </td>
+                            <td> <?= $film['ageLimit'] ?></td>
+                            <td> <?= $categoryName ?></td>
+                            <td> <?= $duration?></td>
+                            <td> <?= $film['price'] ?>€</td>
+                            <td> <?= $film['stock'] ?></td>
+                            <td> <?=substr($film['synopsis'],0, 50) ?>...</td>
+                            <td> <?= $film['date'] ?></td>
+                            <td class="text-center"><a href="gestionFilms.php?action=delete&id_film=<?= $film['id_film'] ?>"><i class="bi bi-trash3-fill"></i></a></td>
+                            <td class="text-center"><a href="gestionFilms.php?action=update&id_film=<?= $film['id_film'] ?>"><i class="bi bi-pen-fill"></i></a></td>
+
+                        </tr>
+
+
+                    <?php
+                }
+
+                ?>
 
 
             </tbody>
 
-        </table>
 
-
-
-
-
+    </table>
 
 
 </div>
-
-
 <?php
 
-
-require_once "../inc/footer.inc.php"
-
+     require_once "../inc/footer.inc.php";
 ?>

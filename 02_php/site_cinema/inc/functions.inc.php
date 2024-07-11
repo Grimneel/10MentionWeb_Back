@@ -46,6 +46,17 @@ function logOut(){
 logOut();
 
 
+########################################### fonction pour string to array pour actor ###########################################
+
+
+function stringToArray(string $string ) :array{
+    
+    $array = explode('/', trim($string, '/')); // Je transforme ma châine de caractére en tableau et je supprime les / autour de la chaîne de caractére 
+    return $array; // ma fonction retourne un tableau
+
+}
+
+
 ########################################### fonction pour la connexion à la BDD ###########################################
 
 // On vas utiliser l'extension PHP Data Objects (PDO), elle définit une excellente interface pour accéder à une base de données depuis PHP et d'exécuter des requêtes SQL .
@@ -622,9 +633,9 @@ function addFilm(string $title, string $director, string $actors, string $ageLim
 
 function allFilms() : mixed{
         
-    $pdo = connexionBdd();
+    $cnx = connexionBdd();
     $sql= "SELECT * FROM films"; // requête d'insertion que je stock dans une variable
-    $request = $pdo->query($sql); 
+    $request = $cnx->query($sql); 
     $result = $request->fetchAll();// j'utilise fetchAll() pour récupérer toute les ligne à la fois 
     return $result; // ma fonction retourne un tableau ave les données récupérer de la BDD
 }
@@ -687,4 +698,37 @@ function updateFilm(string $title, string $director, string $actors, string $age
     ));
 
 }
+
+
+function verifFilm(string $title, string $date){
+
+
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM films WHERE title = :title AND date = :date";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ':title' => $title,
+        ':date' => $date
+        
+    ));
+    $result = $request->fetch();
+    return $result;
+}
+
+
+///////////////////////////////////// fonction pour le alt des images //////////////////////////////////
+
+// function altImage() {
+
+
+
+
+
+
+// }
+
+
+
+
+
 ?>
