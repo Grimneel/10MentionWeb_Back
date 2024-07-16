@@ -13,6 +13,52 @@ if (empty($_SESSION['user'])) {
 }
 
 
+// Supression et modification d'une catégorie
+
+if (isset($_GET) && isset($_GET['action']) && isset($_GET['id_film']) && !empty($_GET['action']) && !empty($_GET['id_film'])) {
+
+    $idFilm = htmlentities($_GET['id_film']);
+
+    if(is_numeric($idFilm)){
+
+        $film = showFilmViaId($idFilm);
+
+        if($film){
+
+            if ($_GET['action'] != 'update') {
+
+                header('location:films.php');
+
+            }
+
+        }else {
+            header('location:films.php');
+        }
+
+    } else {
+
+        header('location:films.php');
+
+    }
+
+}
+
+
+// Modification d'une catégorie
+
+if (isset($_GET) && isset($_GET['action']) && isset($_GET['id_film'])) {
+
+    $idFilm = htmlentities($_GET['id_film']);
+
+    if ($_GET['action'] == 'update' && !empty($_GET['id_film'])) {
+        
+        // On récupère le film de la BDD via son id
+        $film = showFilmViaId($idFilm);
+        
+    }
+}
+
+
 $info = "";
 
 
@@ -138,19 +184,42 @@ if (!empty($_POST)) {
 
         } elseif (empty($info)) {
 
-            if (verifFilm($title, $date)) { // si le film existe dans la BDD
+            if (isset($_GET) && isset($_GET['action']) && isset($_GET['id_film']) && !empty($_GET['action']) && !empty($_GET['id_film']) && $_GET['action'] == 'update') {
 
-                // J'affiche un message d'erreur
-                $info = alert('Le film existe déjà','danger');
+                $idFilm = htmlentities($_GET['id_film']);
+
+                updateFilm($title, $director, $actors, $ageLimit, $duration, $date, $price, $stock, $synopsis, $image, $genre, $idFilm);
+                
+                
+            } else {
+                
+                if (verifFilm($title, $date)) { // si le film existe dans la BDD
+
+                    // J'affiche un message d'erreur
+                    $info = alert('Le film existe déjà','danger');
+    
+    
+                }else{ // Si le film 
+    
+                    // Je l'insère dans la BDD
+                    addFilm($title, $director, $actors, $ageLimit, $duration, $date, $price, $stock, $synopsis, $image,  $genre, $idFilm);
+                    header('location:films.php');
+    
+                }
+                
 
 
-            }else{ // Si le film 
 
-                // Je l'insère dans la BDD
-                addFilm($title, $director, $actors, $ageLimit, $duration, $date, $price, $stock, $synopsis, $image,  $genre );
-                header('location:films.php');
+
 
             }
+            
+
+
+
+
+
+            
 
         }
 
@@ -164,7 +233,7 @@ require_once "../inc/header.inc.php";
 ?>
 
 <main>
-    <h2 class="text-center fw-bolder mb-5 text-danger">Ajouter un film</h2>
+    <h2 class="text-center fw-bolder mb-5 text-danger"><?= isset($film) ? 'Modifier un film' : 'Ajouter un film' ?></h2>
 
     <?php
     echo $info;
@@ -174,7 +243,7 @@ require_once "../inc/header.inc.php";
     <div class="row">
         <div class="col-md-6 mb-5">
             <label for="title">Titre de film</label>
-            <input type="text" name="title" id="title" class="form-control" value="">
+            <input type="text" name="title" id="title" class="form-control" value="<?= $film['title'] ?? '' ?>">
 
         </div>
         <div class="col-md-6 mb-5">
@@ -186,11 +255,11 @@ require_once "../inc/header.inc.php";
     <div class="row">
         <div class="col-md-6 mb-5">
             <label for="director">Réalisateur</label>
-            <input type="text" class="form-control" id="director" name="director" value="" >
+            <input type="text" class="form-control" id="director" name="director" value="<?= $film['director'] ?? '' ?>" >
         </div>
         <div class="col-md-6">
             <label for="actors">Acteur(s)</label>
-            <input type="text" class="form-control" id="actors" name="actors" value=""  placeholder="séparez les noms d'acteurs avec un /">
+            <input type="text" class="form-control" id="actors" name="actors" value="<?= $film['actors'] ?? '' ?>"  placeholder="séparez les noms d'acteurs avec un /">
         </div>
     </div>
     <div class="row">
@@ -198,9 +267,9 @@ require_once "../inc/header.inc.php";
         <div class="mb-3">
             <label for="ageLimit" class="form-label">Àge limite</label>
             <select multiple class="form-select form-select-lg" name="ageLimit" id="ageLimit">
-                <option value="10">10</option>
-                <option value="13">13</option>
-                <option value="16">16</option>
+                <option value="10" <?php if(isset($film['ageLimit']) && $film['ageLimit'] == 10) echo 'selected'  ?>>10</option>
+                <option value="13" <?php if(isset($film['ageLimit']) && $film['ageLimit'] == 13) echo 'selected'  ?>>13</option>
+                <option value="16" <?php if(isset($film['ageLimit']) && $film['ageLimit'] == 16) echo 'selected'  ?>>16</option>
             </select>
         </div>
     </div>
@@ -216,7 +285,11 @@ require_once "../inc/header.inc.php";
             ?>
 
             <div class="form-check col-sm-12 col-md-4">
-                <input class="form-check-input" type="radio" name="categories" id="flexRadioDefault1" value="<?=html_entity_decode($categorie["id_category"]) ?>"  >
+                <!-- <input class="form-check-input" type="radio" name="categories" id="flexRadioDefault1" value="<?//=html_entity_decode($categorie["id_category"]) ?>"  <?php// if(isset($film['category_id']) && $film['category_id'] == $categorie['id_category']) echo 'checked' ?>> -->
+                <!-- dans le cas d'une modification on vérifie si la clé étrangère du film à modifier est égale à la clé primaire de la catégorie dans l'input -->
+
+                <input class="form-check-input" type="radio" name="categories" id="<?=html_entity_decode($categorie["name"])?>" value="<?=$categorie["id_category"]?>"  <?=isset($film['category_id']) && $film['category_id'] == $categorie['id_category'] ? 'checked' : '' ?>>
+
                 <label class="form-check-label" for="<?=html_entity_decode($categorie["name"])?>"><?=ucfirst(html_entity_decode($categorie["name"]))?></label>
             </div>
 
@@ -229,38 +302,38 @@ require_once "../inc/header.inc.php";
     <div class="row">
         <div class="col-md-6 mb-5">
             <label for="duration">Durée du film</label>
-            <input type="time" class="form-control" id="duration" name="duration" value="" >
+            <input type="time" class="form-control" id="duration" name="duration" value="<?= $film['duration'] ?? '' ?>" >
         </div>
 
         <div class="col-md-6 mb-5">
 
             <label for="date">Date de sortie</label>
-            <input type="date" name="date" id="date" class="form-control" value="" >
+            <input type="date" name="date" id="date" class="form-control" value="<?= $film['date'] ?? '' ?>" >
         </div>
     </div>
         <div class="row">
             <div class="col-md-6 mb-5">
                 <label for="price">Prix</label>
                 <div class=" input-group">
-                    <input type="text" class="form-control" id="price" name="price"  aria-label="Euros amount (with dot and two decimal places)" value="">
+                    <input type="text" class="form-control" id="price" name="price"  aria-label="Euros amount (with dot and two decimal places)" value="<?= $film['price'] ?? '' ?>">
                     <span class="input-group-text">€</span>
                 </div>
             </div>
 
             <div class="col-md-6">
                 <label for="stock">Stock</label>
-                <input type="number" name="stock" id="stock" class="form-control" min ="0"  value=""> <!--pas de stock négativ donc je rajoute min="0"-->
+                <input type="number" name="stock" id="stock" class="form-control" min ="0"  value="<?= $film['stock'] ?? '' ?>"> <!--pas de stock négativ donc je rajoute min="0"-->
             </div>
         </div>
         <div class="row">
             <div class="col-12">
                 <label for="synopsis">Synopsis</label>
-                <textarea type="text" class="form-control" id="synopsis" name="synopsis" rows="10"></textarea>
+                <textarea type="text" class="form-control" id="synopsis" name="synopsis" rows="10"><?= $film['synopsis'] ?? '' ?></textarea>
             </div>
         </div>
 
         <div class="row justify-content-center">
-            <button type="submit" class="btn btn-danger p-3 w-25">Ajouter un film</button>
+            <button type="submit" class="btn btn-danger p-3 w-25"><?= isset($film) ? 'Modifier un film' : 'Ajouter un film' ?></button>
         </div>
 
 </form>

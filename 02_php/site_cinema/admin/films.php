@@ -15,17 +15,40 @@ if ( $_SESSION['user']['role'] == 'ROLE_USER') {
 }
 
 }
-   
 
 
+// Supression et modification d'une catégorie
 
-$films = allFilms();
+if (isset($_GET) && isset($_GET['action']) && isset($_GET['id_film']) && !empty($_GET['action']) && !empty($_GET['id_film']) && $_GET['action'] == 'delete') {
 
- 
-foreach ($films as $key => $imagesFilm) {
-    $imagesFilm = $film['image']['alt'];
+    $idFilm = htmlentities($_GET['id_film']);
+
+    if(is_numeric($idFilm)){
+
+        $film = showFilmViaId($idFilm);
+
+        if($film){
+            
+                deleteFilm($idFilm);
+                header('location:films.php');
+
+        }else {
+            header('location:films.php');
+        }
+
+    } else {
+
+        header('location:films.php');
+
+    }
 
 }
+
+$films = allFilms();
+// foreach ($films as $key => $imagesFilm) {
+//     $imagesFilm = $film['image']['alt'];
+
+// }
 
 
 
@@ -35,7 +58,7 @@ require_once "../inc/header.inc.php";
 <div class="d-flex flex-column m-auto mt-5">
 
     <h2 class="text-center fw-bolder mb-5 text-danger">Liste des films</h2>
-    <a href="gestionFilms.php" class="btn align-self-end"> Ajouter un film</a>
+    <a href="gestion_film.php" class="btn align-self-end"> Ajouter un film</a>
     <table class="table table-dark table-bordered mt-5 " >
             <thea>
                     <tr >
@@ -81,7 +104,7 @@ require_once "../inc/header.inc.php";
                             <!-- Je récupére les valeus de mon tabelau $film dans des td -->
                             <td><?= $film['id_film'] ?></td>
                             <td> <?= $film['title'] ?></td>
-                            <td> <img src="<?=RACINE_SITE."assets/img/". $film['image'] ?>" alt="affiche du film" class="img-fluid"></td>
+                            <td> <img src="<?=RACINE_SITE."assets/img/". $film['image'] ?>" alt="L'image du film" class="img-fluid"></td>
                             <td> <?= $film['director'] ?></td>
                             <td>
                                 <ul>
@@ -101,8 +124,8 @@ require_once "../inc/header.inc.php";
                             <td> <?= $film['stock'] ?></td>
                             <td> <?=substr($film['synopsis'],0, 50) ?>...</td>
                             <td> <?= $film['date'] ?></td>
-                            <td class="text-center"><a href="gestionFilms.php?action=delete&id_film=<?= $film['id_film'] ?>"><i class="bi bi-trash3-fill"></i></a></td>
-                            <td class="text-center"><a href="gestionFilms.php?action=update&id_film=<?= $film['id_film'] ?>"><i class="bi bi-pen-fill"></i></a></td>
+                            <td class="text-center"><a href="?action=delete&id_film=<?= $film['id_film'] ?>"><i class="bi bi-trash3-fill"></i></a></td>
+                            <td class="text-center"><a href="gestion_film.php?action=update&id_film=<?= $film['id_film'] ?>"><i class="bi bi-pen-fill"></i></a></td>
 
                         </tr>
 

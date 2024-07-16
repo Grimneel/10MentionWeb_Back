@@ -1,6 +1,13 @@
 <?php
   require_once "inc/functions.inc.php";
   
+
+  // Si l'utilisateur est connecté, je l'empêche d'aller sur la page authentification et je le redirige vers la page profil
+  if(!empty($_SESSION['user'])) {
+
+    header('location:profil.php');
+
+}
   
   $info = "";
 

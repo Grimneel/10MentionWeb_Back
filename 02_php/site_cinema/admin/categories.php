@@ -75,30 +75,36 @@ foreach ($_POST as $key => $value) {
 
 // Supression et modification d'une catégorie
 
-if (isset($_GET) && isset($_GET['action']) && isset($_GET['id_category'])) {
+if (isset($_GET) && isset($_GET['action']) && isset($_GET['id_category']) && !empty($_GET['action']) && !empty($_GET['id_category'])) {
 
     $idCategory = htmlentities($_GET['id_category']);
-        
-    if ($_GET['action'] == 'delete' && !empty($_GET['id_category'])) {
-    
 
-        deleteCategory($idCategory);
-
-    }
-
-    if ($_GET['action'] == 'update' && !empty($_GET['id_category'])) {
-        
-        
+    if(is_numeric($idCategory)){
 
         $category = showCategoryViaId($idCategory);
-        // debug($category);
-        // die();
 
+        if($category){
+
+            if ($_GET['action'] == 'delete') {
+
+                deleteCategory($idCategory);
+            }
+            if ($_GET['action'] != 'update') {
+
+                header('location:categories.php');
+
+            }
+
+        }else {
+            header('location:categories.php');
+        }
+
+    } else {
+
+        header('location:categories.php');
 
     }
 
-
-    // header('location:categories.php');
 }
 
 

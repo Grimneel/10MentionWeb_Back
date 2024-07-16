@@ -23,11 +23,11 @@
 
 <body>
 
-    <main>
+    
         <header>
             <nav class="navbar navbar-expand-lg fixed-top">
                 <div class="container-fluid">
-                    <h1><a class="navbar-brand" href="#">Movies</a></h1>
+                <h1><a class="navbar-brand" href="<?=RACINE_SITE?>index.php">M <img src="<?=RACINE_SITE?>assets/img/logo.png" alt="" > VIES</a></h1>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -36,14 +36,25 @@
                             <li class="nav-item">
                                 <a class="nav-link " aria-current="page" href="<?=RACINE_SITE?>index.php">Accueil</a>
                             </li>
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Catégories
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">science fiction</a></li>   
-                                    <li><a class="dropdown-item" href="#">Aventuure</a></li>
+                                <?php
+                                    $categories = allCategories();
+
+                                    foreach ($categories as $categorie) {
+                                        
+                                
+                                ?>
+                                    <li><a class="dropdown-item" href="<?=RACINE_SITE?>index.php?id_category=<?=$categorie['id_category']?>"><?= ucfirst($categorie['name'])?></a></li>
+                                    
+                                <?php
+                                
+                                    }
+                                ?>
                                 </ul>
                             </li>
     
@@ -116,4 +127,6 @@
                 </div>
             </nav>
         </header>
-    
+
+
+    <main>

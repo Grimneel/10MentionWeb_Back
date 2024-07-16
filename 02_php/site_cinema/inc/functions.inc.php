@@ -642,23 +642,7 @@ function allFilms() : mixed{
 
 
 
-/////////////////////////////////////////// fonction pour récuperer une seul catégorie /////////////////////////////////////////////////////
 
-
-function showFilmViaId(int $id){
-
-    $cnx = connexionBdd();
-    $sql = "SELECT * FROM films WHERE id_film = :id";
-    $request = $cnx->prepare($sql);
-    $request->execute(array(
-        ":id" => $id
-    ));
-
-
-    $result = $request->fetch();
-    return $result;
-
-}
 
 
 
@@ -666,9 +650,9 @@ function showFilmViaId(int $id){
 
 function deleteFilm(int $id) :void {
 
-    $pdo = connexionBdd();
+    $cnx = connexionBdd();
     $sql = "DELETE FROM films WHERE id_film = :id";
-    $request = $pdo->prepare($sql);
+    $request = $cnx->prepare($sql);
     $request->execute(array(
         ':id' => $id
     ));
@@ -678,12 +662,13 @@ function deleteFilm(int $id) :void {
 //////////////////////////////////////// Une fonction pour modifier un film //////////////////////////////////////////////
 
 
-function updateFilm(string $title, string $director, string $actors, string $ageLimit,  string $duration, string $date, float $price, int $stock, string $synopsis, string $image, int $category_id) :void {
+function updateFilm(string $title, string $director, string $actors, string $ageLimit,  string $duration, string $date, float $price, int $stock, string $synopsis, string $image, int $category_id, int $id_film) :void {
 
-    $pdo = connexionBdd();
+    $cnx = connexionBdd();
     $sql = "UPDATE films SET title = :title, director = :director, actors = :actors, ageLimit = :ageLimit, duration = :duration, date = :date, price = :price, stock = :stock, synopsis = :synopsis, image = :image, category_id = :category_id WHERE id_film = :id";
-    $request = $pdo->prepare($sql);
+    $request = $cnx->prepare($sql);
     $request->execute(array(
+
         'title' => $title,
         'director' => $director,
         'actors' => $actors,
@@ -694,7 +679,9 @@ function updateFilm(string $title, string $director, string $actors, string $age
         'stock' => $stock,
         'synopsis' => $synopsis,
         'image' => $image,
-        'category_id' => $category_id
+        'category_id' => $category_id,
+        'id_film' => $id_film
+
     ));
 
 }
@@ -715,18 +702,82 @@ function verifFilm(string $title, string $date){
     return $result;
 }
 
-
-///////////////////////////////////// fonction pour le alt des images //////////////////////////////////
-
-// function altImage() {
+/////////////////////////////////////////// fonction pour récuperer un seul film via l'id /////////////////////////////////////////////////////
 
 
+function showFilmViaId(int $id){
+
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM films WHERE id_film = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":id" => $id
+    ));
+
+    $result = $request->fetch();
+    return $result;
+
+}
 
 
+//////////////////////////////////////// Une fonction pour modifier un film //////////////////////////////////////////////
+
+
+// function updateFilm(string $title, string $director, string $actors, string $ageLimit, string $duration, string $date, string $price, string $stock, string $image, string $synopsis, int $category_id ) :void {
+
+//     $pdo = connexionBdd();
+//     $sql = "UPDATE films SET title = :title, director = :director, actors = :actors, ageLimit = :ageLimit, duration = :duration, date = :date, price = :price, stock = :stock, synopsis = :synopsis WHERE id_category = :id";
+//     $request = $pdo->prepare($sql);
+//     $request->execute(array(
+        
+//         ':title' => $title,
+//         ':director' => $director,
+//         ':actors' => $actors,
+//         ':ageLImit' => $ageLimit,
+//         ':duration' => $duration,
+//         ':date' => $date,
+//         ':price' => $price,
+//         ':stock' => $stock,
+//         ':image' => $image,
+//         ':synopsis' => $synopsis,
+//         ':id_category' => $id_category
+//     ));
 
 
 // }
 
+
+function filmByDate() :mixed {
+
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM films ORDER BY date DESC LIMIT 6";
+    $request = $cnx->query($sql);
+    $result = $request->fetchAll();
+    return $result;
+
+}
+
+
+//////////////////////////////////////// Une fonction pour sélectionner un film via la catégorie //////////////////////////////////////////////
+
+function filmByCategory(int $id) :mixed {
+
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM films WHERE category_id = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+
+        ':id'=>$id
+
+    ));
+
+    $result = $request->fetchAll();
+    return $result;
+
+
+
+
+}
 
 
 
