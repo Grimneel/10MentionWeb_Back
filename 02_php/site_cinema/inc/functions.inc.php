@@ -346,7 +346,6 @@ function allUsers() :mixed{
     $request = $cnx->query($sql);
     $result = $request->fetchAll(); // fetchAll() récupère tout les résultats dans la reqûête et les sort sous forme d'un tableau à 2 dismensions
     
-
     return $result;
 
 }
@@ -760,7 +759,7 @@ function filmByDate() :mixed {
 
 //////////////////////////////////////// Une fonction pour sélectionner un film via la catégorie //////////////////////////////////////////////
 
-function filmByCategory(int $id) :mixed {
+function filmsByCategory(int $id) :mixed {
 
     $cnx = connexionBDD();
     $sql = "SELECT * FROM films WHERE category_id = :id";

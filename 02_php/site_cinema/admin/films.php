@@ -84,7 +84,7 @@ require_once "../inc/header.inc.php";
                 <?php
 
                 foreach($films as $key => $film){
-                    //Avant l'affichage des données il fautr formater quelques une:
+                    //Avant l'affichage des données il faut formater quelques une:
 
 
                    $actors= stringToArray($film['actors']); // je transforme la chaîne de caratcétre récupérée à partrir de l'élément $film['actors'] du tableau $film en un tableau avec la fonction stringToArray()
@@ -94,12 +94,12 @@ require_once "../inc/header.inc.php";
                    $categoryName = $category['name'];
 
                    //Gérer l'affichage de la durée
-                        // $objet = new NomDeLaClasse();
-                        $date_time = new DateTime($film['duration']); // nous créeons un nouvel objet DateTime en passant  la valeur de l'input de type time  en tant que paramètre
-                        $duration = $date_time->format('H:i');// Nous utilisons ensuite la méthode format() pour extriare l'heure et les minutes au format 'H:i'
+                    // $objet = new NomDeLaClasse();
+                    $date_time = new DateTime($film['duration']); // nous créeons un nouvel objet DateTime en passant  la valeur de l'input de type time  en tant que paramètre
+                    $duration = $date_time->format('H:i');// Nous utilisons ensuite la méthode format() pour extriare l'heure et les minutes au format 'H:i'
 
 
-                        ?>
+                    ?>
                         <tr>
                             <!-- Je récupére les valeus de mon tabelau $film dans des td -->
                             <td><?= $film['id_film'] ?></td>
