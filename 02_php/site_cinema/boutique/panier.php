@@ -118,7 +118,7 @@ require_once "../inc/header.inc.php";
 
                ?>
                     <tr>
-                         <td class="text-center border-top border-dark-subtle"><a href="<?=RACINE_SITE?>showFilm.php?id_film=$filmDansPanier['id_film']"><img src="<?= RACINE_SITE?>/assets/img/<?=$filmDansPanier['image']?>" style="width: 100px;"></a></td>
+                         <td class="text-center border-top border-dark-subtle"><a href="<?=RACINE_SITE?>showFilm.php?id_film<?=$filmDansPanier['id_film']?>"><img src="<?= RACINE_SITE?>/assets/img/<?=$filmDansPanier['image']?>" style="width: 100px;"></a></td>
                          <td class="text-center border-top border-dark-subtle"><?=$filmDansPanier['title']?></td>
                          <td class="text-center border-top border-dark-subtle"><?=$filmDansPanier['price']?>€</td>
                          <td class="text-center border-top border-dark-subtle d-flex align-items-center justify-content-center" style="padding: 7rem;">
