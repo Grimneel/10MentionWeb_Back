@@ -51,26 +51,25 @@ require_once "inc/header.inc.php";
                               <form action="boutique/panier.php" method="post"  enctype="multipart/form-data"  class="w-50 m-auto row justify-content-center p-5">
                                         <!-- Dans le formulaire d'ajout au panier, ajoutez des champs cachés pour chaque information que vous souhaitez conserver du film -->
                                         <input type="hidden" name="id_film" value="<?=$showFilm['id_film']?>">
-                                        <input type="hidden" name="title" value="<?=$showFilm['title']?>">
-                                        <input type="hidden" name="price" value="<?=$showFilm['price']?>">
-                                        <input type="hidden" name="stock" value="<?=$showFilm['stock']?>">
-                                        <input type="hidden" name="image" value="<?=$showFilm['image']?>">
                                         <select name="quantity" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
                                         <!-- Je créé dynamiquement la quantité sélectionnable dans la limite du stock -->
                                          <?php
                                       
-                                         for ($i=1; $i <= $b ; $i++) { 
-                                         ?>
-
-                                         <option value="<?=$i?>"><?=$i?></option>
-
-                                        <?php
-                                         };
-                                        ?>
+                                      
+                       
+                                      for ($i = 1; $i <= $showFilm['stock']; $i++) :
+                                    
+                                      ?>
+          
+                                      <option value="<?= $i?>"><?= $i?></option>
+          
+                                      <?php
+                                      endfor;
+                                      ?>
                                      
                                    </select>
-                                   <!-- <a href="boutique/panier.php?id_film=<?//=$film["id_film"] ?>" class="btn w-100 m-auto">Ajouter au Panier</a>  -->
-                                   <input class="btn btn-outline-danger mt-3 w-100" type="submit" value="Ajouter au panier" name="ajout_panier" id="addCart">
+                                   
+                                   <button class="m-auto btn btn-danger btn-lg fs-5" type="submit">Ajouter au panier</button>
                                    <!-- au moment du click j'initalise une session de panier qui sera récupérer dans le fichier panier.php -->
                               </form>    
                          </div>
